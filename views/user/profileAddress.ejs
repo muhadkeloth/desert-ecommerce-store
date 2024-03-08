@@ -1,0 +1,174 @@
+<%- include("../partials/user-header.ejs") -%>
+<%- include("../partials/profile_sidebar.ejs") -%>
+<!-- important -->
+
+<link rel="stylesheet" href="/style/prodileAddress.css">
+
+
+<div class="col-md-8 col-sm-10 "><!-- end important-->
+    <div class="col-md-10 offset-md-1"> 
+            <h3 for="" class="d-flex justify-content-between">Profile Address Management<span class="iconblock "><i class="bi bi-list"></i></span> </h3>
+            <hr>
+            <div class="d-flex justify-content-end"> 
+                <button type="button" onclick="createAddress('<%= addresses.length %>')" class="btn  btn-outline-custom">Add Address</button>
+            </div>           
+        <hr>
+
+
+                <!-- start form style display none  -->
+            <div class="row  p-2 mt-3 mb-3 formcreatecss " id="addAddressform" style="display: none;" >
+                <form action="/profileAddressCreate" method="POST"  onsubmit="return createaddressvalidation()">
+                    <div class="form-row d-flex justify-content-between">
+                        <div class="form-group col-md-5">
+                            <label for="name">Name <span style="color: red;">*</span></label>
+                            <input type="name" class="form-control" name="name" id="name" placeholder="Enter Name"  autocomplete="name" required>                
+                        </div>
+                        <div class="form-group col-md-5 ">
+                            <label for="number">Phone Number <span style="color: red;">*</span></label>
+                            <input type="number" class="form-control" name="number" id="number" placeholder="Enter Phone Number" autocomplete="phonenumber"  maxlength="10" required>   
+                            <small class="error-message text-danger" id="numberError"></small>             
+                        </div>
+                    </div>
+                    <div class="form-row mt-2 d-flex justify-content-between">
+                        <div class="form-group col-md-5">
+                            <label for="pincode">Pincode <span style="color: red;">*</span></label>
+                            <input type="number" class="form-control" name="pincode" id="pincode" placeholder="Enter Pincode" autocomplete="pincode" pattern="[0-9]+" maxlength="6" required> 
+                            <small class="error-message text-danger" id="pincodeError"></small>               
+                        </div>
+                        <div class="form-group col-md-5 ">
+                            <label for="locality">Locality <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" name="locality" id="locality" placeholder="Enter Locality " autocomplete="locality" required>                
+                        </div>
+                    </div>
+                    <div class="form-row mt-2 d-flex justify-content-between">
+                        <div class="form-group col-md-12 ">
+                            <label for="address">Address <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control costom-hight-address" name="address" id="address" placeholder="Enter Address (Area and Street)" autocomplete="address" required> 
+                            <small class="error-message text-danger" id="addressError"></small>
+                        </div>                       
+                    </div>
+                    <div class="form-row mt-2 d-flex justify-content-between">
+                        <div class="form-group col-md-5">
+                            <label for="city">City <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" name="city" id="city" placeholder="Enter City/District/Town"  autocomplete="city" required>                
+                        </div>
+                        <div class="form-group col-md-5 ">
+                            <label for="landmark">Land Mark</label>
+                            <input type="text" class="form-control" name="landmark" id="landmark" placeholder="Enter Land Mark (optional)" autocomplete="landmark" >                
+                        </div>
+                    </div>
+                    <div class="form-row mt-4 d-flex ">
+                        <button type="submit" class="btn  btn-primary ">Save</button>
+                        <button onclick="createAddress()"  class="btn ms-2 btn-outline-dark">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+
+            <!-- end form -->
+
+
+            <% if(addresses.length) { %>
+            <% for(let i = 0; i < addresses.length ; i++) { %>
+            <div class="row rounded-border mt-1 p-2">
+                <div id="displayAddress<%= i %>">
+                    <div class="col-12 d-flex align-items-center ms-2 mt-3 addressblock">
+                        <h6 class="d-inline"><%= addresses[i].name %></h6>
+                        <h6 class="d-inline ms-2"><%= addresses[i].number %></h6>
+                        <a  href="# " class="ms-auto text-info" onclick="toggleEditForm('<%= i %>')" >Edit</a>
+                        <a  href="#" onclick="deleteAlert('<%= i %>')" class="text-danger ms-2" >Delete</a>                                   
+                    </div>
+    
+                    <div class="col-12 ms-2 mt-3 mb-2 ">                   
+                        <p class="d-inline"><%= addresses[i].address %></p>
+                        <p class="d-inline ms-2"><%= addresses[i].locality %></p>
+                        <p class="d-inline ms-2"><%= addresses[i].city %></p>
+                        <p class="d-inline ms-2">-<%= addresses[i].pincode %></p>
+                    </div>
+                </div>
+                <!-- start here -->
+                <div id="formedit<%= i %>" style="display: none;">
+                    <form action="/profileAddressedit?index=<%= i %>" method="POST"  onsubmit="return editaddressvalidation()">
+                        <div class="form-row d-flex justify-content-between">
+                            <div class="form-group col-md-5">
+                                <label for="name">Name <span style="color: red;">*</span></label>
+                                <input type="name" class="form-control" name="name" id="nameedit" value="<%= addresses[i].name %>" placeholder="Enter Name"  autocomplete="name" required>                
+                            </div>
+                            <div class="form-group col-md-5 ">
+                                <label for="number">Phone Number <span style="color: red;">*</span></label>
+                                <input type="number" class="form-control" name="number" id="numberedit" value="<%= addresses[i].number %>" placeholder="Enter Phone Number" autocomplete="phonenumber"  maxlength="10" required>   
+                                <small class="error-message text-danger" id="numbereditError"></small>             
+                            </div>
+                        </div>
+                        <div class="form-row mt-2 d-flex justify-content-between">
+                            <div class="form-group col-md-5">
+                                <label for="pincode">Pincode <span style="color: red;">*</span></label>
+                                <input type="number" class="form-control" name="pincode" id="pincodeedit" value="<%= addresses[i].pincode %>" placeholder="Enter Pincode" autocomplete="pincode" pattern="[0-9]+" maxlength="6" required> 
+                                <small class="error-message text-danger" id="pincodeeditError"></small>               
+                            </div>
+                            <div class="form-group col-md-5 ">
+                                <label for="locality">Locality <span style="color: red;">*</span></label>
+                                <input type="text" class="form-control" name="locality" id="localityedit" value="<%= addresses[i].locality %>" placeholder="Enter Locality " autocomplete="locality" required>                
+                            </div>
+                        </div>
+                        <div class="form-row mt-2 d-flex justify-content-between">
+                            <div class="form-group col-md-12 ">
+                                <label for="address">Address <span style="color: red;">*</span></label>
+                                <input type="text" class="form-control costom-hight-address" name="address" value="<%= addresses[i].address %>" id="addressedit" placeholder="Enter Address (Area and Street)" autocomplete="address" required> 
+                                <small class="error-message text-danger" id="addresseditError"></small>
+                            </div>                       
+                        </div>
+                        <div class="form-row mt-2 d-flex justify-content-between">
+                            <div class="form-group col-md-5">
+                                <label for="city">City <span style="color: red;">*</span></label>
+                                <input type="text" class="form-control" name="city" id="cityedit" value="<%= addresses[i].city %>" placeholder="Enter City/District/Town"  autocomplete="city" required>                
+                            </div>
+                            <div class="form-group col-md-5 ">
+                                <label for="landmark">Land Mark</label>
+                                <input type="text" class="form-control" name="landmark" value="<%= addresses[i]?.landmark %>" id="landmarkedit" placeholder="Enter Land Mark (optional)" autocomplete="landmark" >                
+                            </div>
+                        </div>
+                        <div class="form-row mt-4 d-flex ">
+                            <button type="submit" class="btn  btn-primary ">Save</button>
+                            <button onclick="toggleEditForm('<%= i %>'); return false;"  class="btn ms-2 btn-outline-dark">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- end here -->
+            </div>
+            <% } } else { %>
+                <h4>Not Stored Address</h4>
+                <% } %>
+
+ 
+
+
+
+
+    </div>
+    <% if(message) { %>
+        <div id="toaster" class="toast show align-items-center bottom-2 end-2 p-1 position-fixed  border-0 <%= message.bg %> " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+          <div class="d-flex">
+            <div id="tosterbody" class="toast-body"><%= message.innertext %></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+        <% } %>  
+        <!-- Alert Component -->
+        <div id="alertContainer" class="position-fixed top-0 start-50 translate-middle-x" style="z-index: 1050; display: none;">
+            <div id="myAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong id="alertContent"></strong>                            
+                <!-- Bootstrap Alert Container -->
+            </div>
+          </div> <!--  end alert -->
+
+
+
+ <!-- important -->
+</div>
+</div>
+</main>
+
+<script src="/script/profileAddress.js"></script>
+
+ <%- include("../partials/user-footer.ejs") -%>

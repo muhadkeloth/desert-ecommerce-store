@@ -1,0 +1,177 @@
+<%- include('../partials/admin-header.ejs') -%>
+
+<link rel="stylesheet" href="/style/nav-admin.css">
+
+<h5 class="">Orders</h5>
+<div class="d-flex">
+    <form id="search-form" action="/admin/orders"  onsubmit="return searches()" class="col-4 d-flex search justify-content-between align-items-center">
+        <input class="search-input" name="search" id="search" type="text" placeholder="Search orders...">
+        <button style="border: none;" class="search-icon"><i class="bi bi-search"></i></button>
+    </form>
+</div>
+</div>
+
+<div class="col-12">
+    <div class="flex-column justify-content-center col-md-12 ">
+        <h6 class="mt-4">Oreders details...</h6>
+   
+  
+        <table class="table">
+            <thead>
+              <tr>
+                <th>UserID</th>
+                <th>Products</th>
+                <th>Address</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orders.forEach(order => { %>
+                <tr style="border-bottom: 2px solid black;">
+                  <td style="max-width: 150px;" ><%= order.userEmail %></td>
+                  <td>
+                    <% order.item.forEach(product => { %>
+                      <div>
+                        <strong><%= product.productName %></strong>
+                        <p class="m-0">Qty: <%= product.quantity %>,<%= product.size %></p>
+                        <p >Price: <span class="fw-bold"><i class="bi bi-currency-rupee"></i> <%= product.price %></span></p>
+                      </div>
+                      <hr>
+                    <% }); %>
+                  </td>
+                  <td style="max-width: 150px;">
+                      <div>
+                        <strong><%= order.address.name %></strong>
+                        <p class="m-0"><%= order.address.address %></p>
+                        <p class="m-0"><%= order.address.city + ', ' + order.address.locality + '- ' + order.address.pincode %></p>
+                        <p >Num: <span class="fw-bold"><%= order.address.number %></span></p>
+                      </div>
+                  </td>
+                  <td class="fw-bold"><i class="bi bi-currency-rupee"></i> <%= order.totalPrice %></td>
+                  <td class="<%= order.status === 'Placed' ? 'text-info' : order.status === 'Confirmed' ? 'text-warning' : order.status === 'Delivered' ? 'text-success' : 'text-danger'  %>"><%= order.status %></td>
+                  <td style="max-width: 8rem;">
+                    <% if(order.status !== 'Cancelled' && order.status !== 'Delivered' && order.status !== 'Returned' ) { %>
+                    <button class="btn btn-outline-primary" onclick="toggleModal('<%= order._id %>','<%= order.status %>')"><%= order.status === 'Placed' ? 'Confirm' : order.status === 'Confirmed' ? 'Delivered' : ''  %></button>
+                    <button class="btn btn-outline-danger" onclick="toggleModal('<%= order._id %>')"><i class="bi bi-x-circle-fill"></i></button>
+                      <% }else if(order.status === 'Cancelled' && order.CancelReason || order.status === 'Returned' && order.CancelReason ) {  %>                        
+                        <p class="m-0 text-muted">Reason:</p> <span style="font-weight: bold;">"<%= order.CancelReason %>"</span> 
+                        <% } else { %>
+                          <p>-</p>
+                          <% } %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+          
+          
+          <%  if( totalPages > 1) { %>
+            <div  class="d-flex mt-3 justify-content-center">
+                <ul class="pagination ">
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === page ? 'active' : '' %>">
+                            <a class="page-link" href="/admin/orders?page=<%= i %>&search=<%= search || 0 %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+            <% } %>   
+
+        
+     
+    </div>
+</div>
+
+ <!-- checker confirm message -->
+ <div class="modal fade" id="togglestatuses" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Please confirm</h5>
+          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="" id="contentconfirm"> </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="submitbtn"   data-bs-dismiss="modal" class="btn  btn-success">Submit</button>        
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end -->
+
+
+</div>
+</div>
+</main>
+ <script>
+ var myModal = new bootstrap.Modal(document.getElementById('togglestatuses'));
+     
+function toggleModal(orderId, orderstatus = '') {
+  const modal = document.getElementById('togglestatuses');
+  const modalBody = modal.querySelector('.modal-body');
+  const submitButton = document.getElementById('submitbtn');
+    if(orderstatus === ''){
+        modalBody.textContent = `Are you sure do you want to cancel the order ?`;        
+    }else{
+        modalBody.textContent = `Are you sure do you want to change the order status from "${orderstatus}"?`;
+    }
+
+  submitButton.onclick = function() {
+    if (orderstatus === '') {
+        cancelorder(orderId);
+    } else {
+        togglestatus(orderId, orderstatus);
+    }
+
+
+
+  };
+  myModal.show();
+
+}
+
+
+
+
+
+    function togglestatus(orderId,orderstatus){
+        fetch('/admin/ordertoggle', {
+        method:"POST",
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ orderstatus,orderId })
+       })
+       .then(res=> res.json())
+       .then(data => {
+        location.reload()
+       })
+       .catch(err =>{
+        console.error('error editing order in admin',err);
+       })    }
+    
+    function cancelorder(orderId){
+       fetch('/admin/ordercancel', {
+        method:"POST",
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ orderId })
+       })
+       .then(res=> res.json())
+       .then(data => {
+        location.reload()
+       })
+       .catch(err =>{
+        console.error('error canceling order in admin',err);
+       })
+
+    }
+ </script>
+
+
+
+<%- include("../partials/admin-footer.ejs") -%>

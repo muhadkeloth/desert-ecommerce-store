@@ -1,0 +1,106 @@
+
+/* .truncate-text{
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+} */
+
+
+
+   /* .form-check-input:checked + .form-check-label .checkbox-circle {
+    background-color: red; 
+    border: 2px solid red;
+  } */
+  .form-check-label .for-red {
+    background-color: red;
+    border: 2px solid red;
+}
+.form-check-label .for-black{
+      background-color: black;
+      border: 2px solid black;
+  }
+  .form-check-label .for-pink{
+      background-color: pink;
+      border: 2px solid pink;
+  }
+.form-check-label .for-grey{
+      background-color: grey;
+      border: 2px solid grey;
+  }
+.form-check-label .for-green{
+      background-color: green;
+      border: 2px solid pgreenink;
+  }
+.form-check-label .for-blue{
+      background-color: blue;
+      border: 2px solid blue;
+  }
+.form-check-label .for-white{
+      background-color: white;
+      border: 2px solid white;
+  }
+.form-check-label .for-multi{
+      /* background-color: green; */
+      background-image: linear-gradient(90deg, rgb(2, 0, 36) 0%, rgb(68, 68, 117) 23%, rgb(0, 212, 255) 50%, rgb(255, 0, 0) 75%, rgb(255, 255, 0) 100%);
+      border: 2px solid pgreenink;
+  }
+.form-check-label .for-brown{
+      background-color: brown;
+      border: 2px solid brown;
+  }
+.form-check-label .for-yellow{
+      background-color: yellow;
+      border: 2px solid yellow;
+  }
+.form-check-label .for-purple{
+      background-color: purple;
+      border: 2px solid purple;
+  }
+  
+  .checkbox-circle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    margin-right: 5px;
+    margin-top: 3px;
+  }
+  
+  /* Enforce a minimum of one selection (optional) */
+  .form-check-input:first-child:not(:checked) ~ .form-check-input {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  .form-check-input:checked ~ .form-check-input:not(:checked) ~ .form-check-input {
+    pointer-events: all;
+    opacity: 1;
+  }
+
+  /* .stock-details {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px; 
+  }
+  
+  .stock-details label {
+    display: block;
+    margin-bottom: 5px;
+  } */
+
+  .boxes-details legend {
+    font-size: 14px; 
+  }
+  
+  .boxes-details label {
+    margin-bottom: 5px;
+  }
+  
+  .boxes-details input[type="number"] {
+    width: 100px; 
+  }
+  
+  
+  

@@ -1,0 +1,88 @@
+a{
+    text-decoration: none;
+    color: #949090;
+}
+.search{
+    margin-right: .5rem;
+    height: 2.7rem;
+    width: 12rem;
+    background-color: #f1ebeb9a;
+    border-radius: 3.12rem;
+} 
+.search-input{
+    border: 0;
+    padding-left: .5rem;
+    background:none ;
+    height:2.7rem;
+    width: 10rem;
+}
+
+.search,.search-input{
+    transition: width 0.4s linear;
+}
+.search:hover{
+    background: #d2cfcf9a;
+}
+.search:hover > .search-icon{
+    color: rgb(47, 46, 46);
+}
+input:focus{
+    border-radius: 20px;
+}
+
+.search-icon{
+    height: 2rem;
+    padding: .3rem;
+    margin-right: .3rem;
+    width: 1.8rem;
+    border-radius: 3.12rem;
+    color: rgb(127, 127, 125)3;
+}
+.addbutton{
+    margin-right: 1rem;
+    border-radius: 3.12rem;
+    border-color:rgb(244, 88, 1,1) ;
+    color: rgb(244, 88, 1,1);
+}
+.addbutton:hover{
+    color: white;
+    background: rgb(244, 88, 1,1);
+}
+
+/* start of users page number  */
+
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.page-item {
+    margin-right: 5px;
+}
+
+.page-link {
+    text-decoration: none;
+    border: none;
+    color:rgb(244, 88, 1,1);
+    cursor: pointer;
+}
+.page-link:hover{
+    color:rgb(244, 88, 1,1) ;
+    
+}
+
+.page-item.active .page-link {
+    background-color:rgb(244, 88, 1,1);
+    color: #fff;
+}
+/* end of page numbers */
+
+@media  (max-width:991px) {
+    .dynmcNav{
+        display: none;
+    }
+
+}
+
+

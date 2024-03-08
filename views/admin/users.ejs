@@ -1,0 +1,73 @@
+<%- include('../partials/admin-header.ejs') -%>
+
+    <link rel="stylesheet" href="/style/nav-admin.css">
+    <link rel="stylesheet" href="/style/users-admin.css">
+    <h5 class="">Users</h5>
+    <div class="d-flex">
+        <form id="search-form" action="/admin/users"  onsubmit="return searches()" class="col-4 d-flex search justify-content-between align-items-center">
+            <input class="search-input" name="search" id="search" type="text" placeholder="Search name...">
+            <button style="border: none;" class="search-icon"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+    </div>
+    <div class="col-12">
+        <div class="flex-column justify-content-center col-md-12 ">
+            <h6 class="mt-4">Users details...</h6>
+            <% if(!allusers || allusers.length === 0) { %>
+                <h2 class="text-center">Users NOt Found</h2>
+                <% } else { %>
+            <table class="table col-12 table-hover" id="user-details-table">
+                <thead>
+                    <tr class="text-center align-middle">
+                        <th scope="col">No</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col truncate-text">Address</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let j=12*(currentPage-1); allusers.forEach((data) => { %>
+                    <tr class="text-center align-middle" >
+                        <th scope="row"><%= ++j %></th>
+                        <td><%= data.userName %></td>
+                        <td><%= data.email %></td>
+                        <td><%= data.phoneNumber %></td>
+                        <td class="truncate-text"><%= data?.addresses[0]?.address %></td>
+                        
+                        <td class="<%= data.blockStatus ? 'text-success' : 'text-danger' %>" id="status_<%= data._id %>" ><%= data.blockStatus ? 'Active' : 'InActive' %></td>
+                        <td>
+                            <div class="row justify-content-center align-items-center">
+                                <div class="col-8 d-flex">
+                                    <button id="toggleButton_<%= data._id %>" type="button" onclick="toggleStatus('<%=data._id %>')"
+                                        class="container btn <%= data.blockStatus ? 'btn-outline-danger': 'btn-outline-success' %> ">
+                                        <%- data.blockStatus ? `<i class="bi bi-ban"></i>Block` : `<i class="bi bi-patch-check-fill"></i>UnBlock` %>                                    
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            
+            <% } if( totalPages > 1) { %>
+            <div class="d-flex justify-content-center">
+                <ul class="pagination ">
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="/admin/users?page=<%= i %>&search=<%= search || 0 %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+            <% } %>
+        </div>
+    </div>
+    </div>
+    </div>
+    </main>
+    <script src="/script/users-admin.js"></script>
+    <%- include("../partials/admin-footer.ejs") -%>

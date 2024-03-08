@@ -1,0 +1,180 @@
+<%- include("../partials/user-header.ejs") -%>
+<!-- for checkbox  -->
+<link rel="stylesheet" href="/style/products-admin.css">
+<link rel="stylesheet" href="/style/productlist.css">
+<link rel="stylesheet" href="/style/homeland.css">
+
+<section class="p-2 col-12 row container-fluid">
+  <div class="col-6">
+    <h6>Home/ All Products</h6>
+    <h6><%= (totalPages-1)*12 %> Related Results Loaded</h6>
+  </div>
+    <div class="col-6 form-group justify-content-end d-flex align-items-center ">
+      <label for="category">Sort: </label>
+      <select name="category" id="category"  class="form-select ms-1" style="max-width: 200px;">        
+        <option value="NewestFirst" <% if (sort === '') { %>selected<% } %>>Newest First</option>
+        <option value="Popularity" <% if (sort === 'Popularity') { %>selected<% } %>>Popularity</option>
+        <option value="LtoH" <% if (sort === 'LtoH') { %>selected<% } %>>Price-Low to High</option>
+        <option value="HtoL" <% if (sort === 'HtoL') { %>selected<% } %>>Price-High to Low</option>
+      </select>
+  </div>
+</section>
+<main class="row">
+    <div class="col-md-2 filtercontainer ">
+        <div class="d-flex pt-1 ps-1  justify-content-between">
+            <button class=" m-0 btn-filter" onclick="applyFilter()">Apply Filter</button>
+            <button class=" m-0 btn-filter" onclick="clearFilter()">Clear All</button>
+        </div>
+        <hr>
+        <% if(categorylist.length) { %>
+        <div class="filters ps-2">
+            <h2 >CATEGORIES</h2>
+              <ul>
+                <% categorylist.forEach(data => { %>
+                <li>
+                  <input type="checkbox" id="categorylist<%= data._id %>" name="gender" value="<%= data._id %>" <% if (productsQuery?.category?.includes(data._id.toString())) { %>checked<% } %>>
+                  <label for="categorylist<%= data._id %>"><%= data.categoryName %></label>
+                </li>
+                <% }) %>
+              </ul>
+        </div>
+        <% } %>
+        <div class="filters ps-2">
+            <h2 >PRICE RANGE</h2>
+              <ul>
+                <li>
+                  <input type="radio" id="10000" name="priceRange" value="10000" <% if (productsQuery?.priceRange === '10000') { %>checked<% } %>>
+                  <label for="10000">Under <i class="bi bi-currency-rupee"></i>10,000</label>
+                </li>
+                <li>
+                  <input type="radio" id="15000" name="priceRange" value="15000" <% if (productsQuery?.priceRange === '15000') { %>checked<% } %>>
+                  <label for="15000"><i class="bi bi-currency-rupee"></i>10,000 - <i class="bi bi-currency-rupee"></i>15,000</label>
+                </li>
+                <li>
+                  <input type="radio" id="20000" name="priceRange" value="20000" <% if (productsQuery?.priceRange === '20000') { %>checked<% } %>>
+                  <label for="20000"><i class="bi bi-currency-rupee"></i>15,000 - <i class="bi bi-currency-rupee"></i>20,000</label>
+                </li>
+                <li>
+                  <input type="radio" id="25000" name="priceRange" value="25000" <% if (productsQuery?.priceRange === '25000') { %>checked<% } %>>
+                  <label for="25000"><i class="bi bi-currency-rupee"></i>20,000 - above</label>
+                </li>
+              </ul>
+              
+        </div>        
+        
+        <div class="filters ps-2 radio">
+            <h2 >Select Colors:</h2>
+                <div class="col-12">         
+                  <% const colors = ['red', 'black', 'pink', 'grey', 'green', 'blue', 'white', 'multi', 'brown', 'yellow', 'purple']; %>                  
+                  <% colors.forEach(color => { %>
+                    <div class="form-check form-check-inline" title="<%= color.charAt(0).toUpperCase() + color.slice(1) %>">
+                      <label class="form-check-label" for="<%= `Checkbox-${color}` %>">
+                        <span class="checkbox-circle for-<%= color %>"></span>
+                      </label>
+                      <input class="form-check-input" type="checkbox" name="colors" id="<%= `Checkbox-${color}` %>" value="<%= color %>" <% if (productsQuery?.colors?.includes(color)) { %>checked<% } %>>
+                    </div>
+                  <% }); %>              
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class="col-md-10 col-sm-12    ">
+        <div class="row col-md-12 col-sm-12  col-12    d-flex">
+            <!-- start -->
+            <% if(!productslist || productslist.length === 0 ) { %>
+                <h2>Products Not Found</h2>
+                <% } else { %>
+            <%   productslist.forEach(data => { %>
+            <div class="col-md-4 col-12 mt-2   ">
+                <div class="card" onclick="productdetails('<%= data._id %>')" style="cursor: pointer;" >
+                    <img src="/assets/uploads/<%= data.images[0] %>"  class="card-img-top" alt="Product Image" style="max-height: 395px;" >
+                    <div class="card-body">
+                      <h5 class="card-title"><%= data.title %> </h5>
+                      <p class="card-text">Category: <%= data.subtitle %></p>
+                      <% if(data.price.offer) { %>
+                        <p class="card-text text-danger">MRP: <i class="bi bi-currency-rupee"></i> <b><del><%= data.price.OriginalPrice %></del></b></p>
+                        <p class="card-text text-success">Offer: <i class="bi bi-currency-rupee"></i> <b><%=  data.price.OriginalPrice * (1 -  data.price.offer/100) %></b></p>
+                        <% }else { %>
+                      <p class="card-text "><%= data.brand %> </p>
+                      <p class="card-text "> <i class="bi bi-currency-rupee"></i> <b><%= data.price.OriginalPrice %></b> </p>
+                      <% } %>
+                    </div>
+                  </div>
+            </div>
+
+            <% }) } if( totalPages > 1) { %>
+                <div  class="d-flex mt-3 justify-content-center">
+                    <ul class="pagination ">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= i === page ? 'active' : '' %>">
+                                <a class="page-link" href="/productlist?page=<%= i %>&search=<%= search || 0 %>&sort=<%= sort %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+                <% } %>     
+    
+        </div>
+    </div>
+</main>
+  
+<% if (search) { %>
+  <script>
+      window.addEventListener('DOMContentLoaded', function() {
+          const searchValue = '<%= search %>';
+          if (searchValue) {
+              // search_input(searchValue);
+              const search_input = document.getElementById('search-input');
+              search_input.value = searchValue;
+          }
+      });
+  </script>
+<% } %>
+
+
+<script>
+
+  const categorySelect = document.getElementById('category');
+  categorySelect.addEventListener('change', function(event) {
+    event.preventDefault();
+    // const selectedOption = event.target.value;
+    const selectedFilters = [];
+
+     const genderCheckboxes = document.querySelectorAll('input[name="gender"]:checked');
+     const priceRangeselected = document.querySelector('input[name="priceRange"]:checked')?.value;
+     const colorCheckboxes = document.querySelectorAll('input[name="colors"]:checked');
+    const search_input = document.getElementById('search-input').value;
+
+    genderCheckboxes.forEach(checkbox => selectedFilters.push(`gender=${checkbox.value}`));
+    selectedFilters.push(`priceRange=${priceRangeselected}`)
+    colorCheckboxes.forEach(checkbox => selectedFilters.push(`color=${checkbox.value}`));
+    const queryString = selectedFilters.join('&');
+
+    window.location.href = `/productlist?sort=${event.target.value}&${queryString}&search=${search_input}`;
+});
+
+function applyFilter(){
+     const selectedFilters = [];
+
+     const genderCheckboxes = document.querySelectorAll('input[name="gender"]:checked');
+     const priceRangeselected = document.querySelector('input[name="priceRange"]:checked')?.value;
+     const colorCheckboxes = document.querySelectorAll('input[name="colors"]:checked');
+    if(!genderCheckboxes.length && !priceRangeselected && !colorCheckboxes.length){
+       return;  
+     }
+    const search_input = document.getElementById('search-input').value;
+    genderCheckboxes.forEach(checkbox => selectedFilters.push(`gender=${checkbox.value}`));
+    selectedFilters.push(`priceRange=${priceRangeselected}`)
+    colorCheckboxes.forEach(checkbox => selectedFilters.push(`color=${checkbox.value}`));
+
+
+const queryString = selectedFilters.join('&');
+window.location.href = `/productlist?${queryString}&search=${search_input}`;
+}
+
+function clearFilter(){
+  const search_input = document.getElementById('search-input').value;
+  window.location.href = `/productlist?search=${search_input}`;
+}
+</script>
+<%- include("../partials/user-footer.ejs") -%>

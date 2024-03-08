@@ -1,0 +1,86 @@
+<%- include("../partials/user-header.ejs") -%>
+<%- include("../partials/profile_sidebar.ejs") -%>
+<!-- important -->
+<div class="col-md-8 col-sm-10 "><!-- end important-->
+    <div class="col-md-5 offset-md-2"> 
+        <h3 for="" class="d-flex justify-content-between">Change Password<span class="iconblock "><i class="bi bi-list"></i></span> </h3><hr>
+        <form class="mt-5" action="/profilechangepassword" method="post" onsubmit="return validatedata()">
+            <div class="form-group">
+                <label for="password">Old Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="********">
+                <input type="hidden" class="form-control" name="userId" id="userId" value="<%= userId %>">
+                <small class="error-message text-danger" id="passwordError"></small>
+            </div>
+            <div class="form-group mt-3">
+                <label for="newpassword">New Password</label>
+                <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="********">
+                <small class="error-message text-danger" id="newpasswordError"></small>
+            </div>
+            <div class="form-group mt-3">
+                <label for="ConfirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="ConfirmPassword" placeholder="********">
+                <small class="error-message text-danger" id="ConfirmPasswordError"></small>
+            </div>
+            <div class="text-center p-3">
+                <button class="btn btn-primary submit_button" type="submit"><span class="submit_text">CHANGE PASSWORD</span></button>
+            </div>
+        </form>
+
+    </div>
+    <!-- important -->
+    </div>
+    </div>
+    </main>
+
+    <script>
+        function validatedata(){
+            const password = document.getElementById('password').value;
+            const newpassword = document.getElementById('newpassword').value;
+            const ConfirmPassword = document.getElementById('ConfirmPassword').value;
+
+    let isValid = true;
+
+    resetError();
+
+    if(/\s/.test(password) || password.length < 8 ){
+        displayError('password','password Error try another.');
+        isValid = false;
+    }
+    if(password === newpassword ){
+        displayError('newpassword','New and old password must not equal.');
+        isValid = false;
+    }else if (/\s/.test(password) ||  password.length < 8  ){
+        displayError('newpassword','new password Error try another.');
+        isValid = false;
+    }
+    if(ConfirmPassword.length == 0){
+        displayError('ConfirmPassword','Please Enter Password.');
+        isValid =false;
+    }else if(ConfirmPassword !=newpassword){
+        displayError('ConfirmPassword','Password Not Match');
+        isValid =false;
+    }
+
+    return isValid;
+}
+
+function displayError(field,message){
+    const errorElement = document.getElementById(field + 'Error');
+    const inputElement = document.getElementById(field);
+
+    errorElement.innerText = message;
+    inputElement.classList.add('border','border-danger');
+}
+
+// reset error when validation
+function resetError(){
+    const errorElement = document.querySelectorAll('.error-message');
+    const inputElement = document.querySelectorAll('.form-control');
+    
+    errorElement.forEach(element => element.innerText='')
+    inputElement.forEach(element => element.classList.remove('border','border-danger'))
+}
+    </script>
+
+
+    <%- include("../partials/user-footer.ejs") -%>

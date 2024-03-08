@@ -1,0 +1,37 @@
+<%- include("../partials/auth-header.ejs") -%>
+
+<div class="container-fluid div_logo" onclick="goToHome()"></div>
+<div class="d-fle flex-column justify-content-center">
+<div  class="card card_login col-md-6 offset-md-3">
+    <div class="card-body">
+        <h3 class="header-color card-title">Welcome Back</h3>
+        <form action="/login" method="post" onsubmit="return loginValidate()">
+            <div class="form-group mt-4">
+                <label for="email">Email</label>
+                <input type="email" class="form-control <%- locals.message === 'emailError' ? 'border border-danger' : '' %>
+                 mt-2" name="email" id="email" placeholder="Enter email" value="<%- locals.useremail ?? '' %>" autocomplete="email">
+                <small class="error-message text-danger" id="emailError"><%= locals.message === 'emailError' ? locals.error.message : '' %></small>
+            </div>
+            <div class="form-group mt-4 justify-content-between">
+                <div class="d-flex justify-content-between">
+                    <label for="password">Password</label>
+                    <a href="/forgotPassword" class="forgot_password">Forgot Password ?</a>
+                </div>
+                <input type="password" class="form-control <%- locals.message === 'passwordError' ? 'border border-danger' : '' %>
+                 mt-2" name="password" id="password" placeholder="********">
+                <small class="error-message text-danger" id="passwordError"><%- locals.message === 'passwordError' ? locals.error.message : '' %></small>
+            </div>
+            <div class="text-center p-3">
+                <button class="btn btn-primary submit_button" type="submit"><span class="signup_text">LOGIN</span></button>
+            </div>
+        </form>
+        <div class="text-center mt-2">
+            <p class="text-secondary">I don't have an account ?<a href="/signup">Signup</a></p>
+        </div>
+    </div>
+</div>
+
+<%- include("../partials/auth-footer.ejs") -%>
+
+
+

@@ -1,0 +1,308 @@
+<%- include('../partials/admin-header.ejs') -%>
+
+<link rel="stylesheet" href="/style/nav-admin.css">
+<link rel="stylesheet" href="/style/products-admin.css">
+
+<h5 class="">Products Edits...</h5>
+</div>
+<div class="col-12">
+<div class="flex-column justify-content-center col-md-12 ">
+   <div class="card mt-4  col-md-6 offset-md-3">
+      <div class="card-body">
+          <h3 class="header-color card-title">Edit Product</h3>
+
+
+          <form action="/admin/products/editProduct" id="formproduct" method="post" onsubmit="return productformValidation()" enctype="multipart/form-data">
+              <div class="form-group mt-4">
+                  <label for="title">Title*</label>
+                  <input type="name" class="form-control <%- locals.message === 'titleError' ? 'border border-danger' : '' %>
+                              mt-2" name="title" id="title" placeholder="Enter product title"
+                      value="<%- productdata[0].title ?? '' %>" autocomplete="name">
+                  <input type="hidden" class="form-control " name="id" id="id" value="<%- productdata[0]._id ?? '' %>" >
+                  <small class="error-message text-danger" id="titleError">
+                      <%= locals.message==='titleError' ? locals.error.message : '' %>
+                  </small>
+              </div>
+              <div class="form-group mt-4">
+                  <label for="subtitle">SubTitle*</label>
+                  <input type="text " class="form-control <%- locals.message === 'subtitleError' ? 'border border-danger' : '' %>
+                              mt-2" name="subtitle" id="subtitle" placeholder="Enter product subtitle"
+                      value="<%- productdata[0].subtitle ?? '' %>" autocomplete="name">
+                  <small class="error-message text-danger" id="subtitleError">
+                      <%= locals.message==='subtitleError' ? locals.error.message : '' %>
+                  </small>
+              </div>
+              <div class="form-group mt-4">
+                  <label for="description">Description*</label>
+                  <input type="text" class="form-control <%- locals.message === 'descriptionError' ? 'border border-danger' : '' %>
+                              mt-2" name="description" id="description" placeholder="Enter product description"
+                      value="<%- productdata[0].description ?? '' %>" autocomplete="name">
+                  <small class="error-message text-danger" id="descriptionError">
+                      <%= locals.message==='descriptionError' ? locals.error.message : '' %>
+                  </small>
+              </div>
+              <div class="form-group mt-4">
+                  <label for="brand">Brand Name*</label>
+                  <input type="text" class="form-control <%- locals.message === 'brandError' ? 'border border-danger' : '' %>
+                              mt-2" name="brand" id="brand" placeholder="Enter product brand Name"
+                      value="<%- productdata[0].brand ?? '' %>" autocomplete="name">
+                  <small class="error-message text-danger" id="brandError">
+                      <%= locals.message==='brandError' ? locals.error.message : '' %>
+                  </small>
+              </div>           
+
+              <div class="form-group mt-4">
+                <fieldset class="boxes-details mb-3">
+                    <legend class="fs-6 fw-normal">Price</legend>                                    
+                    <div class="row">
+                      <div class="col-2">
+                        <label for="mrp" class="form-label">MRP*:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" value="<%- productdata[0].price?.OriginalPrice ?? '' %>" class="form-control form-control-sm" id="mrp" name="mrp" placeholder="MRP">
+                        <small class="error-message text-danger" id="mrpError"></small>
+                      </div>                      
+                      <div class="col-2">
+                        <label for="offerprice" class="form-label">Offer Price:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" value="<%- productdata[0].price?.CurrentPrice ?? '' %>" class="form-control form-control-sm" id="offerprice" name="offerprice" placeholder="Offer Price">
+                      </div>                      
+                    </div>
+                    </fieldset>
+              </div>
+
+
+              <!-- <div class="form-group mt-4" id="colordiv">
+                <label  for="">Select Colors:*</label>
+                <div class="col-12 ">                   
+                        <div class="form-check form-check-inline" title="Red">
+                            <label class="form-check-label"  for="Checkbox-Red" >
+                                <span class="checkbox-circle for-red"></span>
+                            </label>
+                            <input class="form-check-input"  type="checkbox" id="Checkbox-Red" name="colors" value="red">
+                          </div>
+                          <div class="form-check form-check-inline" title="Black">
+                              <label class="form-check-label"  for="Checkbox-black">
+                                <span class="checkbox-circle for-black"></span>
+                              </label>
+                              <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-black" value="black">
+                          </div>
+                          <div class="form-check form-check-inline" title="Pink">
+                              <label class="form-check-label"  for="Checkbox-pink">
+                                <span class="checkbox-circle for-pink"></span>
+                              </label>
+                              <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-pink" value="pink">
+                          </div>                  
+                          <div class="form-check form-check-inline" title="Grey">
+                              <label class="form-check-label" for="Checkbox-grey">
+                                  <span class="checkbox-circle for-grey"></span>
+                              </label>
+                              <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-grey" value="grey">
+                            </div>
+                </div>
+                <div class="col-12 ">
+                   
+                      <div class="form-check form-check-inline"  title="Green">
+                          <label class="form-check-label" for="Checkbox-green">
+                            <span class="checkbox-circle for-green"></span>
+                          </label>
+                          <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-green" value="green">
+                      </div>
+                      <div class="form-check form-check-inline" title="Blue">
+                          <label class="form-check-label" for="Checkbox-blue">
+                            <span class="checkbox-circle for-blue"></span>
+                          </label>
+                          <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-blue" value="blue">
+                      </div>                  
+                      <div class="form-check form-check-inline" title="White">
+                          <label class="form-check-label" for="Checkbox-white">
+                              <span class="checkbox-circle for-white"></span>
+                          </label>
+                          <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-white" value="white">
+                        </div>
+                        <div class="form-check form-check-inline" title="Multi">
+                            <label class="form-check-label" for="Checkbox-multi">
+                              <span class="checkbox-circle for-multi"></span>
+                            </label>
+                            <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-multi" value="multi">
+                        </div>
+            </div>
+                <div class="col-12 ">
+                   
+                      <div class="form-check form-check-inline" title="brown">
+                          <label class="form-check-label" for="Checkbox-brown">
+                            <span class="checkbox-circle for-brown"></span>
+                          </label>
+                          <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-brown" value="brown">
+                      </div>                  
+                      <div class="form-check form-check-inline" title="Yellow">
+                          <label class="form-check-label" for="Checkbox-yellow">
+                            <span class="checkbox-circle for-yellow"></span>
+                          </label>
+                          <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-yellow" value="yellow">
+                      </div>                  
+                      <div class="form-check form-check-inline" title="Purple">
+                          <label class="form-check-label" for="Checkbox-purple">
+                            <span class="checkbox-circle for-purple"></span>
+                          </label>
+                          <input class="form-check-input" type="checkbox" name="colors" id="Checkbox-purple" value="purple">
+                      </div>                  
+            </div>
+            <small class="error-message text-danger" id="checkboxError"></small>
+              </div> -->
+
+              <!-- start -->
+              <div class="form-group mt-4" id="colordiv">
+                <label for="">Select Colors:*</label>
+                <div class="col-12">
+              
+                  <% const colors = ['red', 'black', 'pink', 'grey', 'green', 'blue', 'white', 'multi', 'brown', 'yellow', 'purple']; %>
+                  
+                  <% colors.forEach(color => { %>
+                    <div class="form-check form-check-inline" title="<%= color.charAt(0).toUpperCase() + color.slice(1) %>">
+                      <label class="form-check-label" for="<%= `Checkbox-${color}` %>">
+                        <span class="checkbox-circle for-<%= color %>"></span>
+                      </label>
+                      <input class="form-check-input" type="checkbox" name="colors" id="<%= `Checkbox-${color}` %>" value="<%= color %>" <%= productdata[0].colors?.includes(color) ? 'checked' : '' %>>
+                    </div>
+                  <% }); %>
+              
+                </div>
+                <small class="error-message text-danger" id="checkboxError"></small>
+              </div>
+              
+
+              <!-- end -->
+
+              <div class="form-group mt-4">
+                  <label for="category">Choose Category:*</label>
+                  <select name="category" id="category" class="form-select">
+                    <% category.forEach(data => { %>
+                    <option value="<%= data._id %>" <%=  productdata[0].category?.categoryName === data.categoryName ? 'selected' : '' %> ><%= data.categoryName %></option>
+                    <% }) %>
+                  </select>
+              </div>
+
+
+              <!-- <div class="form-group mt-4">
+                <fieldset class="boxes-details mb-3">
+                    <legend class="fs-6 fw-normal">Stock Details</legend>
+                    <div class="row mb-1">
+                      <div class="col-2">
+                        <label for="size40" class="form-label">Size 40:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control form-control-sm" id="size40" name="stock[size40]" placeholder="quantity">
+                      </div>
+                      <div class="col-2">
+                        <label for="size41" class="form-label">Size 41:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control form-control-sm" id="size41" name="stock[size41]" placeholder="quantity">
+                      </div>
+                    </div>
+                    <div class="row mb-1">
+                      <div class="col-2">
+                        <label for="size42" class="form-label">Size 42:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control form-control-sm" id="size42" name="stock[size42]" placeholder="quantity">
+                      </div>
+                      <div class="col-2">
+                        <label for="size43" class="form-label">Size 43:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control form-control-sm" id="size43" name="stock[size43]" placeholder="quantity">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-2">
+                        <label for="size44" class="form-label">Size 44:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control form-control-sm" id="size44" name="stock[size44]" placeholder="quantity">
+                      </div>                      
+                    </div>
+                    </fieldset>
+              </div> -->
+
+              <div class="form-group mt-4">
+                <fieldset class="boxes-details mb-3">
+                  <legend class="fs-6 fw-normal">Stock Details</legend>
+                  <% const sizes = ['Size40', 'Size41', 'Size42', 'Size43', 'Size44']; %>
+                  <% sizes.forEach(size => { %>
+                    <div class="row mb-1">
+                      <div class="col-2">
+                        <label for="<%= size %>" class="form-label">Size <%= size.slice(4) %>:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control form-control-sm" id="<%= size %>" name="stock[<%= size %>]" placeholder="quantity" value="<%= (productdata[0] && productdata[0].stocks && productdata[0].stocks[size]) || '' %>">
+                      </div>
+                    </div>
+                  <% }); %>
+                </fieldset>
+              </div>
+              <!--end of size fit  -->
+
+              
+              <!-- <div class="form-group mt-4">
+                <label for="imageUpload">Upload Images:*</label>
+                <div class="input-group" id="imageInputdiv">
+                  <input type="file" class="form-control" id="imageUpload" name="imageUpload" multiple accept="image/*">
+                  <button class="btn btn-outline-secondary" type="button" id="imageButton">Browse</button>
+                </div>
+                <div class="row mt-3" id="imagePreviewContainer"></div>
+                <small class="text-muted">First Image was highlighted .Max 5 images.</small>
+                <small class="error-message text-danger" id="imageError"></small>
+              </div> -->
+              <div class="form-group mt-4">
+                <label for="imageUpload">Upload Images:*</label>
+                <div class="input-group" id="imageInputdiv">
+                  <input type="file" class="form-control" id="imageUpload" name="imageUpload" multiple accept="image/*">
+                  <button class="btn btn-outline-secondary" type="button" id="imageButton">Browse</button>
+                </div>
+                <di2v class="row mt-3" id="imagePreviewContainer">
+                  <!-- add this when imageloaded available -->
+
+
+
+                  <!-- <% if (productdata && productdata.images && productdata.images.length > 0) { %>
+                    <% productdata.images.forEach((image, index) => { %>
+                      <div class="col-3 mb-3">
+                        <img src="<%= image %>" alt="Image <%= index + 1 %>" class="img-fluid">
+                        <button type="button" class="btn btn-sm btn-close p-0" data-image-id="<%= `image-${index}` %>">&times;</button>
+                      </div>
+                    <% }); %>
+                  <% } %> -->
+
+
+                  
+                </di2v>
+                <small class="text-muted">First Image will be highlighted. Max 5 images.</small>
+                <small class="error-message text-danger" id="imageError"></small>
+              </div>
+              <!--  end of image tag-->
+              
+             
+              <div class="text-center p-3">
+                  <button class="btn btn-primary submit_button" type="submit"><span
+                          class="signup_text">SUBMIT</span></button>
+              </div>
+          </form>
+
+
+      </div>
+  </div>
+   
+   
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<script src="/script/products-edit.js"></script>
+<!-- <script src="/script/products-admin.js"></script> -->
+
+<%- include("../partials/admin-footer.ejs") -%>

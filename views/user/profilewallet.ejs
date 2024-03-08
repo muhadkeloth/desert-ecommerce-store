@@ -1,0 +1,57 @@
+<%- include("../partials/user-header.ejs") -%>
+<%- include("../partials/profile_sidebar.ejs") -%>
+<!-- important -->
+<link rel="stylesheet" href="/style/prodileAddress.css">
+
+
+<div class="col-md-8 col-sm-10 "><!-- end important-->
+    <div class="col-md-10 offset-md-1">
+            <h3 for="" class="d-flex justify-content-between">Wallet Management <span class="iconblock "><i class="bi bi-list"></i></span> </h3>
+            
+            <hr>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-success">Add Money</button>
+                <h6 class="text-end align-items-center">Balance: <span class="badge bg-success  "><i class="bi bi-currency-rupee"></i><%= walletdetails.wallet %></span></h6>
+            </div>
+            <!-- start -->
+            <div class="col-12">
+                <div class="flex-column justify-content-center col-md-12 ">
+                    <h6 class="mt-4">wallet history...</h6>
+                    <% if(!walletdetails?.wallethistory || walletdetails?.wallethistory.length === 0) { %>
+                        <h2 class="text-center">Wallet History NOt Found</h2>
+                        <% } else { %>
+                    <table class="table col-12 table-hover" id="user-details-table">
+                        <tbody>
+                            <% let j=12*(page-1); walletdetails?.wallethistory.forEach((data) => { %>
+                            <tr class="text-center align-middle" >
+                                <th scope="row"><%= ++j %></th>
+                                <td>#<%= data.orderId %></td>
+                                <td><%= data.date.toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true }) %></td>     
+                                <td class="<%= data.amount >= 0 ? 'text-success' : 'text-danger' %>" id="" ><%= data.amount %></td>                               
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                    
+                    <% } if( totalPages > 1) { %>
+                    <div class="d-flex justify-content-center">
+                        <ul class="pagination ">
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="page-item <%= i === page ? 'active' : '' %>">
+                                    <a class="page-link" href="/wallet?page=<%= i %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+
+
+
+
+             <!-- important -->
+</div>
+</div>
+</main>
+<%- include("../partials/user-footer.ejs") -%>

@@ -1,0 +1,112 @@
+<%- include("../partials/user-header.ejs") -%>
+
+<link rel="stylesheet" href="/style/productdetails.css">
+
+<div class="container-fluid mt-2">
+  <button id="gobackbtn" onclick="goBack()" type="button">
+    <i class="bi bi-arrow-left">Go Back</i>
+  </button>
+</div>
+<main class="container">
+    <section class="py-5">
+        <div class="container">
+          <div class="row gx-5">
+            <aside class="col-lg-6">
+              <div id="mainImgContainer" style="height: 80vh;"  class="border rounded-4 mb-3 d-flex justify-content-center">
+                <a data-fslightbox="mygalley" id="zoomimg" style="background-image: url('/assets/uploads/<%= productdetails.images[0] %>');" class="rounded-4 zoom" onmousemove="zoom(event)"  data-type="image" href="#">
+                  <img id="mainImage" style="max-width: 100%; max-height: 100%; margin: auto;" class="rounded-4 fit" src="/assets/uploads/<%= productdetails.images[0] %>" />
+                </a>
+              </div>
+              <div class="d-flex justify-content-center mb-3">
+                <% for (let i = 0; i < productdetails.images.length; i++) { %>
+                 <a onmouseenter="changeMainImg('<%= productdetails.images[i] %>')" data-fslightbox="mygalley" class="border mx-1 rounded-2" data-type="image" href="#" class="item-thumb">
+                  <img width="60" height="60" class="rounded-2" src="/assets/uploads/<%= productdetails.images[i] %>" />
+                </a>
+                <% } %>              
+              </div>              
+            </aside>
+            <main class="col-lg-6">
+              <div class="ps-lg-3">
+                <h4 class="title text-dark">
+                    <%= productdetails.title %> <br />
+                    <%= productdetails.subtitle %>
+                </h4>
+                <div class="d-flex flex-row my-3">
+                  <div class="text-warning mb-1 me-2">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                    <span class="ms-1">
+                      4.5
+                    </span>
+                  </div>
+                  <span class="text-success ms-2">In stock</span>
+                </div>
+      
+                <div class="mb-3">
+                  <% if(productdetails.price.offer) { %>
+                    <span class="h5 text-success"><i class="bi bi-currency-rupee"></i> <b><%= productdetails.price.OriginalPrice * (1 -  productdetails.price.offer/100) %></b></span>
+                    <span class="text-muted"><del><i class="bi bi-currency-rupee"></i><%= productdetails.price.OriginalPrice %></del></span>
+                    <% }else { %>
+                      <span ><i class="bi bi-currency-rupee"></i> <b><%= productdetails.price.OriginalPrice %></b></span>
+                  <% } %>
+                </div>
+      
+                <p><%= productdetails.description %></p>
+      
+                <div class="row">
+                  <dt class="col-3">Color</dt>
+                  <dd class="col-9"><%= productdetails.colors %></dd>
+                  <dt class="col-3">Brand</dt>
+                  <dd class="col-9"><%= productdetails.brand %></dd>
+                </div>
+      
+                <hr />
+      
+                <div class="row mb-4">
+                  <div class="col-md-4 col-6">
+                    <input type="hidden" id="stockdetails" value='<%= JSON.stringify(productdetails.stocks) %>'>
+                    <label class="mb-2">Size</label>
+                    <select class="form-select border border-secondary" id="sizeSelect" style="height: 35px;">
+                     <!-- here options auto generate in js -->
+                    </select>
+                  </div>
+                  <!-- col.// -->
+                  <div class="col-md-4 col-6 mb-3">
+                    <label class="mb-2 d-block">Quantity</label>
+                    <div class="input-group mb-3" style="width: 170px;">
+                      <button class="btn btn-white border border-secondary px-3" onclick="decrementqty()" type="button" id="button-addon1" data-mdb-ripple-color="dark">
+                        <i class="bi bi-dash"></i>
+                      </button>
+                      <input type="text" id="qty" name="qty" class="form-control text-center border border-secondary"    value="1" aria-label="Example text with button addon" aria-describedby="button-addon1" />
+                      <button class="btn btn-white border border-secondary px-3" onclick="incrementqty()" type="button" id="button-addon2" data-mdb-ripple-color="dark">
+                        <i class="bi bi-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- <a href="#" class="btn btn-warning shadow-0"> Buy now </a> -->
+                <a href="#" onclick="addtocart('<%= productdetails._id %>')" class="btn btn-success shadow-0"> <i class="bi bi-cart-plus"></i> Add to cart </a>
+                <a href="#" onclick="addtowishlist('<%= productdetails._id %>')" class="btn btn-info border border-primary py-1.5 icon-hover px-3"> <i class="me-1 bi bi-heart "></i> Add to Wishlist </a>
+              </div>
+            </main>
+          </div>
+        </div>
+      </section>
+      <!-- toaster -->
+      <div id="toaster" class="toast hide align-items-center bottom-2 end-2 p-1 position-fixed  border-0  " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+        <div class="d-flex">
+          <div id="tosterbody" class="toast-body"></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+   
+      
+    
+
+</main>
+<script src="/script/productdetails.js"></script>
+
+<%- include("../partials/user-footer.ejs") -%>

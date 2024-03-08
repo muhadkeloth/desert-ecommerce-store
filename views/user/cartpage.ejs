@@ -1,0 +1,334 @@
+<%- include("../partials/user-header.ejs") -%>
+
+<style>
+   #gobackbtn{
+    border: none;
+    background-color: rgb(246,246,246);
+  }
+  #gobackbtn:hover{
+    opacity: .8;
+  }
+</style>
+
+<div class="container-fluid mt-2">
+  <button id="gobackbtn" onclick="goBack()" type="button">
+    <i class="bi bi-arrow-left">Go Back</i>
+  </button>
+</div>
+<div class="container mt-1">
+
+    <section class="h-100 gradient-custom">
+        <div class="container py-5">
+          <div class="row d-flex justify-content-center my-4">
+            <div class="col-md-8">
+              <div class="card mb-4">
+                <div class="card-header py-3">
+                  <h5 class="mb-0">Cart - <%= cartdocs.length %> items</h5>
+                </div>
+                <div class="card-body">
+                  <!-- Single item -->
+                  <% let producttotal = 0; if(!cartdocs.length) { %>
+                    <h5>cart is empty <a href="/">Click me </a> to Explore our wide selection</h5>
+                    <% } else { for(let i = 0 ; i < cartdocs.length ; i++) { producttotal += cartdocs[i].price.OriginalPrice * cartdocs[i].quantity %>
+                  <div class="row" id="cartRow_<%= cartdocs[i]._id %>">
+                    <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                      <!-- Image -->
+                      <div onclick="productdetailpage('<%= cartdocs[i].productId %>')" class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light" style="cursor: pointer;">
+                        <img src="/assets/uploads/<%= cartdocs[i].images[0] %>"
+                          class="w-100" alt="Blue Jeans Jacket" />
+                      </div>
+                      <!-- Image -->
+                    </div>
+      
+                    <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                      <!-- Data -->
+                      <p><strong><%= cartdocs[i].title %></strong></p>
+                      <p><%= cartdocs[i].subtitle %></p>
+                      <p>Color: <%= cartdocs[i].colors %></p>
+                      <p><%= cartdocs[i].size %></p>
+                      <input type="hidden" name="sizeSelect" id="sizeSelect_<%= cartdocs[i]._id %>" value="<%= cartdocs[i].size %>">
+                      <button type="button" onclick="confirmdetete('<%= cartdocs[i]._id %>')" class="btn btn-danger btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
+                        title="Remove item">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                      <button type="button" onclick="addtowishlist('<%= cartdocs[i].productId %>','<%= cartdocs[i]._id %>')" class="btn btn-primary btn-sm mb-2" data-mdb-toggle="tooltip"
+                        title="Move to the wish list">
+                        <i class="bi bi-heart"></i>
+                      </button>
+                      <!-- Data -->
+                    </div>
+      
+                    <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                      <!-- Quantity -->
+                      <div class="d-flex" style="max-width: 200px">
+                        <button class="btn btn-primary px-3 me-2" min="1"
+                          onclick="decincqty('<%= cartdocs[i]._id %>',-1,'<%= cartdocs[i].price.OriginalPrice %>')">
+                          <i class="bi bi-dash"></i>
+                        </button>
+      
+                        <div class="rounded d-flex justify-content-center align-items-center" style="width: 3rem;">
+                          <span id="qty_<%= cartdocs[i]._id %>"   ><%= cartdocs[i].quantity ?? '1' %></span>
+                          <!-- <input id="qty_<%= cartdocs[i]._id %>" min="0" name="quantity" value="<%= cartdocs[i].quantity ?? '1' %>" type="number" class="form-control" /> -->
+                        </div>
+      
+                        <button class="btn btn-primary px-3 ms-2"
+                          onclick="decincqty('<%= cartdocs[i]._id %>',1,'<%= cartdocs[i].price.OriginalPrice %>')">
+                          <i class="bi bi-plus"></i>
+                        </button>
+                      </div>
+                      <small class="m-0 text-danger" id="errorqty_<%= cartdocs[i]._id %>"></small>
+                      <!-- Quantity -->
+      
+                      <!-- Price -->
+                      <p class="text-start text-md-center mt-4">
+                        <strong><small><i class="bi bi-currency-rupee"></i></small> <b><%= cartdocs[i].price.OriginalPrice %></b></strong>
+                      </p>
+                      <!-- Price -->
+                    </div>
+
+
+                    <!-- here start toast -->
+                    <div class="toast " id="toastdelete_<%= cartdocs[i]._id %>" role="alert" aria-live="assertive" aria-atomic="true">
+                      <div class="toast-body ">
+                        <p class="text-danger">  Are you sure to remove item!</p>
+                       
+                        <div class="mt-2 pt-2 border-top">
+                          <button type="button" onclick="deletecartitem('<%= cartdocs[i]._id %>')" class="btn btn-danger btn-sm">Remove Product</button>
+                          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <!-- end of toast -->
+                    <hr class="my-4" />
+                    <!-- Single item -->
+
+                  </div>
+                  <% }} %>         
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card mb-4">
+                <div class="card-header py-3">
+                  <h5 class="mb-0">Summary</h5>
+                </div>
+                <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                    <li
+                      class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                      Products
+                      <span><i class="bi bi-currency-rupee"></i> <span id="productSubTotal"><%= producttotal %></span></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                      Shipping
+                      <span class="text-success"></span>
+                    </li>
+                    <li
+                      class="list-group-item d-flex justify-content-between align-items-center  px-0 ">
+                      Discount
+                      <span class="text-success">-<i class="bi bi-currency-rupee"></i> <span id="discountAmount"></span><%= amount.dis %></span>
+                    </li>
+                    <li
+                      class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                      <div>
+                        <strong>Total amount <small class="text-muted">(inc GST)</small></strong>
+                      </div>
+                      <strong><i class="bi bi-currency-rupee"></i> <span id="totalAmount"><%= amount.totalPrice %></span></strong>
+                    </li>
+                  </ul>
+                  <% if(cartdocs.length) { %>
+                  <button type="button" onclick="goToCheckout()" class="btn btn-primary btn-lg btn-block">
+                    Go to checkout
+                  </button>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+</div>
+   <!-- toaster -->
+   <div id="toaster" class="toast hide align-items-center bottom-2 end-2 p-1 position-fixed  border-0  " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+    <div class="d-flex">
+      <div id="tosterbody" class="toast-body"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+
+<script>
+
+
+function goBack() {
+window.history.back();
+}
+
+function goToCheckout(){
+  window.location.href = '/checkout';
+}
+
+
+  function decincqty(cartId,value,productPrice ){
+
+    const currentqty = document.getElementById('qty_' + cartId);
+    const errorqty = document.getElementById('errorqty_' + cartId );
+    errorqty.innerText = '';
+    const currentValue = parseInt(currentqty.textContent);
+    if(value === -1 && currentValue === 1){
+      errorqty.innerText = 'Reached min quantity';
+      return; 
+    }else if(value === 1 && currentValue === 5){
+      errorqty.innerText = 'Reached max quantity';
+      return; 
+    }
+
+    let data = {
+      cartId : cartId,
+      value:value
+    };
+    fetch('/decrementIncrementCart',{
+      method:'POST',
+      headers:{'Content-Type': 'application/json'},
+      body:JSON.stringify(data)
+    })
+    .then((res) => res.json())
+    .then(data => {
+      if(data.success){
+        if(data.message){
+          currentqty.innerText = data.value;
+          errorqty.innerText = data.message;
+        }else{
+          const productSubTotal = document.getElementById('productSubTotal');
+          subTotal = parseInt(productSubTotal.innerText);
+          const totalAmount = document.getElementById('totalAmount');
+          total = parseInt(totalAmount.innerText);
+          productPrice = parseInt(productPrice);
+          if(value === 1){
+            subTotal += productPrice;
+            total += productPrice;
+          }else if(value === -1){
+            subTotal -= productPrice;
+            total -= productPrice;
+          }
+          currentqty.innerText = data.value;
+          productSubTotal.innerText = subTotal;
+          totalAmount.innerText = total;
+        }
+      }else{
+        if(data.message === 'OUT OF STOCK'){
+          location.reload();
+        }else{
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-success');
+        tosterbody.innerText = data.message;               
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-success');
+          toaster.classList.add('hide');
+        }, 2000);
+        }
+      }
+
+    })
+    .catch(err => {
+      console.error('error in fetch qty',err)
+    })
+  }
+
+  function confirmdetete(cartId){
+    const toggleid = document.getElementById('toastdelete_' + cartId);
+    toggleid.classList.add('show');    
+  }
+  
+  function deletecartitem(cartId){
+    fetch(`/cartitemdelete?cartId=${cartId}`,{
+      method:'DELETE',
+      headers:{'Content-Type': 'application/json'},
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      if(data.success){
+        const toggleid = document.getElementById('toastdelete_' + cartId);
+        toggleid.classList.remove('show');    
+        const deleteRow = document.getElementById(`cartRow_${cartId}`);
+        deleteRow.parentNode.removeChild(deleteRow);
+        // toastalert
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-success');
+        tosterbody.innerText = data.message;               
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-success');
+          toaster.classList.add('hide');
+        }, 2000);
+      }else{
+        // toastalertfalied
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-danger');
+        tosterbody.innerText = data.message; 
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-danger');
+          toaster.classList.add('hide');
+        }, 2000);
+      }
+    })
+    .catch(err => {
+      console.error('error deleting cart items ',err);
+    })
+  }
+
+  function productdetailpage(productId){
+    window.location.href = `/productdetails?productId=${productId}`;
+  }
+
+  function addtowishlist(productId ,id){
+  const size = document.getElementById('sizeSelect_' + id).value;
+  const qty = document.getElementById('qty_' + id).value;
+  const data = {
+    size:size,qty:qty
+  }
+  fetch('/addtowishlist?productId=' + productId,{
+    method: 'POST',
+     headers: {'Content-Type': 'application/json' },
+    body:JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.result === true){
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-success');
+        tosterbody.innerText = data.message;               
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-success');
+          toaster.classList.add('hide');
+        }, 2000);
+      }else{
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-danger');
+        tosterbody.innerText = data.message; 
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-danger');
+          toaster.classList.add('hide');
+        }, 2000);
+    }
+  })
+  .catch(err => {
+    console.error('error addingwishlist:',err);
+  })
+}
+
+
+
+</script>
+<%- include("../partials/user-footer.ejs") -%>

@@ -1,0 +1,168 @@
+<%- include('../partials/admin-header.ejs') -%>
+
+<link rel="stylesheet" href="/style/nav-admin.css">
+
+<h5 class="">Offers</h5>
+<div class="d-flex">
+    <form action="/admin/Offer"  class="col-4 d-flex search justify-content-between align-items-center">
+        <input class="search-input" name="search" id="search" type="text" placeholder="Search..." required>
+        <button style="border: none;" class="search-icon"><i class="bi bi-search"></i></button>
+    </form>  
+    <div class=" d-flex">
+        <button onclick="createOffer()" type="button" class=" btn addbutton"><i class="bi bi-plus-lg"></i><span class="dynmcNav">Add Offer</span></button>                
+    </div>
+</div>
+</div>
+ <!-- here create model sstart -->
+ <div class="modal fade" id="createModel" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top " role="document"> <!--centered -->
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title" id="editModalLabel">create offer</h5>
+          </div>
+          <div class="modal-body">
+             <form id="createoffer" action="/admin/offers" method="POST" onsubmit="return validateForm()"  >
+
+                <div class="form-group mt-2">
+                    <label for="title">title <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control <%- locals.message === 'titleError' ? 'border border-danger' : '' %>
+                                mt-2" name="title" id="title" placeholder="Enter offer title"
+                         autocomplete="name">
+                    <small class="error-message text-danger" id="titleError">
+                        <%= locals.message==='titleError' ? locals.error.message : '' %>
+                    </small>
+                </div>
+
+                <div class="form-group mt-4">
+                    <label for="percentage">Percentage %<span class="text-danger">*</span></label>
+                    <input type="number" class="form-control mt-2" name="percentage" id="percentage" placeholder="Enter percentage of discount" autocomplete="number" min="1" pattern="[0-9]+" max="99" required>
+                </div>
+
+                
+                <!-- <div class="form-group mt-4 d-flex mb-2">
+                    <div style="flex:1" >                        
+                        <label for="">select Category:<span class="text-danger">*</span></label>
+                        <input type="" class="form-control mt-2" name="" id="" placeholder="" required>       
+                    </div>
+                    <div style="flex:1" class="ms-2">
+                        <label for="">select Products Date<span class="text-danger">*</span></label>
+                        <input type="" class="form-control mt-2" name="" id="" placeholder="" required>   
+                    </div>
+                </div> -->
+                <div class="form-group mt-4 d-flex mb-2">                    
+                        <label for="categorySelect">Select Category:<span class="text-danger">*</span></label>
+                        <select class="form-control mt-2" name="categorySelect" id="categorySelect" required>
+                            <!-- Options will be dynamically populated by JavaScript -->
+                        </select>
+                </div>
+                <div class="form-group mt-4 d-flex mb-2">                    
+                    <label for="productSelect">Select Products:<span class="text-danger">*</span></label>
+                    <select multiple class="form-control mt-2" name="productSelect" id="productSelect" required>
+                        <!-- Options will be dynamically populated by JavaScript -->
+                    </select>
+                </div>
+                
+                
+
+                <div class="modal-footer">
+                   <button type="button" class="btn btn-secondary" onclick="createOffer()" data-dismiss="modal">Close</button>
+                   <button type="submit" class="btn btn-primary"  >Save</button>
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+  </div>
+
+
+<div class="flex-column justify-content-center col-md-12">
+        <h6 class="mt-4">Offers details...</h6>
+
+        <% if(!allOffer || allOffer.length === 0 ) { %>
+            <h2>Offer Not Found</h2>
+            <% } else { %>
+          <table class="table table-hover">
+              <thead>
+                <tr class="text-center align-middle">
+                  <th scope="col">No</th>
+                  <th scope="col">title</th>
+                  <th scope="col">categorys</th>
+                  <th scope="col">products</th>
+                  <th scope="col">percentage</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% let j = 12*(page-1); allOffer.forEach((data) => { %>
+                <tr id="offerRow_<%= data._id %>" class="text-center align-middle">
+                  <th scope="row"><%= ++j %></th>
+                  <td id="offerName_<%= data._id %>" ><%= data.name %></td>
+                  <td id="offerName_<%= data._id %>" ><%= data.category.categoryName %></td>
+                  <td id="offerName_<%= data._id %>" >
+                    <% data.products.forEach(product => { %>
+                          <p class="m-0"><%= product.title %></p>
+                      <% }); %>
+                </td>
+                  <td id="offerName_<%= data._id %>" ><%= data.percentage %>%</td>
+                  <td class="<%= data.status ? 'text-success' : 'text-danger' %>" id="status_<%= data._id %>" ><%= data.status ? 'Listed' : 'UnListed' %></td>
+                  <td>
+                    <div class="row justify-content-center align-items-center">
+                    <div class="col-8 d-flex">
+                      <button title="Status Toggle" id="toggleButton_<%= data._id %>" onclick="toggleStatus('<%= data._id %>')" type="button"
+                         class="container btn <%= data.status ? 'btn-outline-danger': 'btn-outline-success' %>">
+                         <%- data.status ? `<i class="bi bi-ban">&nbsp;</i>UnList` : `<i class="bi bi-card-checklist">&nbsp;</i>List` %> 
+                        </button>
+                    </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="row justify-content-center align-items-center">
+                          <div class="col-8 d-flex">
+                              <button title="Delete" type="button" onclick="deleteoffer('<%= data._id %>')" class="container btn btn-outline-danger"><i class="bi bi-trash3-fill"></i></button>
+                          </div>
+                      </div>
+                      </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <% } if( totalPages > 1) { %>
+              <div  class="d-flex justify-content-center">
+                  <ul class="pagination ">
+                      <% for (let i = 1; i <= totalPages; i++) { %>
+                          <li class="page-item <%= i === page ? 'active' : '' %>">
+                              <a class="page-link" href="/admin/offers?page=<%= i %>&search=<%= search || 0 %>"><%= i %></a>
+                          </li>
+                      <% } %>
+                  </ul>
+              </div>
+              <% } %>
+</div>
+
+
+
+
+
+
+
+
+</div>
+</div>
+</main>
+
+ <!-- toasted message -->
+<% if(message) { %>
+    <div id="toaster" class="toast show align-items-center bottom-2 end-2 p-1 position-fixed  border-0 <%= message.bg %> " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+      <div class="d-flex">
+        <div id="tosterbody" class="toast-body"><%= message.innertext %></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+    <% } %> 
+    <!-- end -->
+
+<script src="/script/offer.js"></script>
+
+<%- include("../partials/admin-footer.ejs") -%>

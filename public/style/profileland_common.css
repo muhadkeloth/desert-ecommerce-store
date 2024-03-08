@@ -1,0 +1,39 @@
+/* profile dash */
+.menudiv h3{
+    margin-left: 0;
+    margin-bottom: 10px;
+    padding: 0;
+    color: rgb(244, 88, 1,1);
+}
+.menudiv a{
+    text-decoration-line: none;
+    display: block;
+    color: black;
+    padding-left: 3px;
+    font-size: larger;
+    border-radius: 5px;
+}
+.menudiv a:hover{
+    background:rgb(244, 88, 1,1);
+    color: #f9f9f9;
+}
+
+.iconblock{
+    display: none;
+}
+.sidebarpointer {
+    background:rgb(244, 88, 1,1);
+    color: #ffffff;
+}
+
+@media (max-width: 768px){
+    .menudiv{
+        display: none;
+    }
+    .iconblock{
+        display: block;
+    }
+}
+/* checker */
+
+

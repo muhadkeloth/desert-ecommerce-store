@@ -1,0 +1,134 @@
+
+
+<%- include('../partials/admin-header.ejs') -%>
+
+<link rel="stylesheet" href="/style/nav-admin.css">
+
+
+
+<h5 class="">Category</h5>
+<div class="d-flex">
+    <form action="/admin/category"  class="col-4 d-flex search justify-content-between align-items-center">
+        <input class="search-input" name="search" id="search" type="text" placeholder="Search..." required>
+        <button style="border: none;"  class="search-icon"><i class="bi bi-search"></i></button>
+    </form>  
+    <div class=" d-flex">
+        <button type="button" onclick="createCategory()" class=" btn addbutton"><i class="bi bi-plus-lg"></i><span class="dynmcNav">Add Category</span></button>                
+    </div>
+</div>
+</div>
+<div class="col-12">
+<div class="flex-column justify-content-center col-md-12">
+    <h6 class="mt-4">Category details...</h6>
+    <!-- here create model sstart -->
+    <div class="modal fade" id="createModel" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered " role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="editModalLabel">create Category</h5>
+            </div>
+            <div class="modal-body">
+               <div id="createcate" >
+                  <!-- <input type="hidden" id="editCategoryId" name="editCategoryId"> -->
+                  <label for="createCategoryName">Category Name:</label>
+                  <input type="text" id="createCategoryName" name="createCategoryName" required>
+                  <div class="modal-footer">
+                     <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                     <button type="button" class="btn btn-primary" onclick="saveCategory()">Save</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+    <!-- end of create model -->
+    <!-- here start edit model -->
+<div class="modal fade" id="editModel" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="ModalLabel">Edit Category</h5>
+        </div>
+        <div class="modal-body">
+           <div id="categoryeditcreate" >
+              <input type="hidden" id="editCategoryId" name="editCategoryId">
+              <label for="CategoryName">Category Name:</label>
+              <input type="text" id="editCategoryName" name="editCategoryName" required>
+              <div class="modal-footer">
+                 <button type="button" class="btn btn-primary" onclick="saveEditedCategory()">Save changes</button>
+              </div>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- end of edit model -->
+    <% if(!allCategory || allCategory.length === 0 ) { %>
+      <h2>Category Not Found</h2>
+      <% } else { %>
+    <table class="table table-hover">
+        <thead>
+          <tr class="text-center align-middle">
+            <th scope="col">No</th>
+            <th scope="col">Category</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% let j = 12*(currentPage-1); allCategory.forEach((data) => { %>
+          <tr id="categoryRow_<%= data._id %>" class="text-center align-middle">
+            <th scope="row"><%= ++j %></th>
+            <td id="categoryName_<%= data._id %>" ><%= data.categoryName %></td>
+            <td class="<%= data.Status ? 'text-success' : 'text-danger' %>" id="status_<%= data._id %>" ><%= data.Status ? 'Listed' : 'UnListed' %></td>
+            <td>
+              <div class="row justify-content-center align-items-center">
+              <div class="col-8 d-flex">
+                <button title="Status Toggle" id="toggleButton_<%= data._id %>" onclick="toggleStatus('<%= data._id %>')" type="button"
+                   class="container btn <%= data.Status ? 'btn-outline-danger': 'btn-outline-success' %>">
+                   <%- data.Status ? `<i class="bi bi-ban">&nbsp;</i>UnList` : `<i class="bi bi-card-checklist">&nbsp;</i>List` %> 
+                  </button>
+              </div>
+              </div>
+            </td>
+            <td>
+              <div class="row justify-content-center align-items-center">
+              <div class="col-8 d-flex ">
+                <button type="button" onclick="editCategory('<%= data._id %>', document.getElementById('categoryName_<%= data._id %>').innerText )"  class="container btn btn-outline-success"><i class="bi bi-pencil-square"></i></button>
+              </div>
+              </div>
+            </td>
+            <td>
+              <div class="row justify-content-center align-items-center">
+                    <div class="col-8 d-flex">
+                        <button title="Delete" type="button" onclick="deleteCategory('<%= data._id %>')" class="container btn btn-outline-danger"><i class="bi bi-trash3-fill"></i></button>
+                    </div>
+                </div>
+                </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } if( totalPages > 1) { %>
+        <div  class="d-flex justify-content-center">
+            <ul class="pagination ">
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="/admin/category?page=<%= i %>&search=<%= search || 0 %>"><%= i %></a>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+        <% } %>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script src="/script/category-admin.js"></script>
+
+
+
+<%- include("../partials/admin-footer.ejs") -%>

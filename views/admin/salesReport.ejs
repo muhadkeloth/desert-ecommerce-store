@@ -1,0 +1,217 @@
+<%- include('../partials/admin-header.ejs') -%>
+
+    <link rel="stylesheet" href="/style/nav-admin.css">
+    <h5 class="">Sales Reports</h5>
+    <div class="d-flex">
+        <!-- Add filter buttons -->
+    <div class="d-flex justify-content-between align-items-center m-2">
+    <div class="me-2">
+        <button class="btn btn-outline-primary" onclick="filterBy('weekly')">Weekly</button>
+        <button class="btn btn-outline-primary" onclick="filterBy('monthly')">Monthly</button>
+        <button class="btn btn-outline-primary" onclick="filterBy('yearly')">Yearly</button>
+        <button class="btn btn-outline-primary" onclick="showCustomDateModal()">Custom Date</button>
+    </div>
+    <!-- Add custom date modal -->
+    <div id="customDateModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select Custom Date Range</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body ">
+                    <div class="mb-3">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" class="form-control" id="startDate" value="<%= inputDate.startDate %>" name="startDate">
+                    </div>
+                    <div>
+                        <label for="endDate">End Date:</label>
+                        <input type="date" class="form-control" id="endDate" value="<%= inputDate.endDate %>" name="endDate">
+                        <small class="error-message text-danger" id="endDateError"></small>  
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="filterByCustomDate()">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- end of filter -->
+</div>
+                      <input type="hidden" class="form-control" id="startDatevalue" value="<%= inputDate.startDate %>" name="startDatevalue">
+                      <input type="hidden" class="form-control" id="endDatevalue" value="<%= inputDate.endDate %>" name="endDatevalue">
+
+    <div class="col-12">
+        <div class="flex-column justify-content-center col-md-12 ">
+            <div class="d-flex mt-4 align-items-center justify-content-between mb-2">
+                <h6 class="m-0">Sales Reports... <%= filter ? '(' + filter + ')' : "" %></h6>
+                <div class="me-2">
+                    <button class="btn btn-dark p-2" onclick="generatePDF()"><i class="bi bi-download"></i> PDF</button>
+                    <button class="btn btn-dark ms-2 p-2" onclick="generateEXCEL()"><i class="bi bi-download"></i> EXCEL</button>
+                </div>
+            </div>
+
+                    <table class="table col-12 table-hover">
+                        <thead>
+                          <tr class="text-center align-middle">
+                            <th scope="col">No</th>
+                            <th scope="col">Customer Details</th>
+                            <th scope="col">Order Id</th>
+                            <th scope="col">Products</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Order Date</th>
+                            <th scope="col">Payment Mode</th>
+                            <th scope="col">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% let j = 12*(page-1); allData.forEach((data) => { %>
+                          <tr id="productRow_<%= data._id %>" class="text-center align-middle">
+                            <th scope="row"><%= ++j %></th>
+                            <td style="max-width: 120px;">
+                                <p class="text-start m-0"><%= data.user.name %>,</p>
+                                <p class="text-start m-0" style="max-width: 120px; overflow: hidden; word-wrap: break-word;"><%= data.user.email %></p>
+                            </td>
+                            <td class="text-start" style="max-width: 120px; overflow: hidden; word-wrap: break-word;">#<%= data._id %></td>
+                            <td>
+                                <% data.products?.forEach(product => { %>
+                                <%= product.title %>
+                                <% }) %>
+                            </td>
+                            <td>
+                                <p class="text-start mb-1"><%= data.address.name %></p>
+                                <p class="m-0 text-start"><%= data.address.address %>, <%= data.address.locality %>, <%= data.address.city %></p>
+                                <p class="m-0 text-start"><%= data.address.pincode %>, mob:<%= data.address.number %></p>
+                            </td>
+                            <td><%= data.orderDate %></td>
+                            <td>
+                                <p class="m-0"><%= data.paymentType %></p>
+                                <% if(data.totalPrice < data.mrprice) { %>
+                                    <small class="text-success m-0">Saved: <i class="bi bi-currency-rupee"></i><%= data.mrprice - data.totalPrice %></small>
+                                    <% } %>
+                            </td>
+                            <td><i class="bi bi-currency-rupee"></i> <%= data.totalPrice %></td>             
+                          </tr>
+                          <% }) %>
+                        </tbody>
+                      </table>
+                      <!-- pagination  -->
+                      <%  if( totalPages > 1) { %>
+                        <div  class="d-flex mt-3 justify-content-center">
+                            <ul class="pagination ">
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= i === page ? 'active' : '' %>">
+                                        <a class="page-link" onclick="pagination('<%= filter %>','<%= i %>')"><%= i %></a>
+                                        <!-- <a class="page-link" href="/admin/salesreport?page=<%= i %>&filter=<%= filter %>"><%= i %></a> -->
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <% } %>  
+
+                <!-- toaster -->
+                </div>
+            </div>
+
+            </div>
+            </div>
+            </main>
+            <script>
+                function filterBy(filterType) {
+                    window.location.href = `/admin/salesreport?filter=${filterType}`;
+            }
+            
+            function showCustomDateModal() {
+                const modal = new bootstrap.Modal(document.getElementById('customDateModal'));
+                modal.show();
+            }
+
+
+            function pagination(filter,page){
+                if(filter === 'custom'){
+                    const startDateInput = document.getElementById('startDatevalue');
+                    const endDateInput = document.getElementById('endDatevalue');
+                    const startDate = startDateInput.value;
+                    const endDate = endDateInput.value;
+                    window.location.href =`/admin/salesreport?page=${page}&filter=${filter}&startDate=${startDate}&endDate=${endDate}`;
+                }else{
+                    window.location.href =`/admin/salesreport?page=${page}&filter=${filter}`;
+                }
+            }
+            
+            
+            function filterByCustomDate() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+                
+                if (startDate > endDate) {
+                    const errorElement = document.getElementById('endDateError');
+                    const inputElement = document.getElementById('endDate');    
+                    errorElement.innerText = "Start date cannot be higher than end date.";
+                    inputElement.classList.add('border','border-danger');
+            
+                    return;
+                }
+            
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (startDate > today) {
+                    const errorElement = document.getElementById('endDateError');
+                    const inputElement = document.getElementById('endDate');    
+                    errorElement.innerText = "Start date cannot be higher than today's date.";
+                    inputElement.classList.add('border','border-danger');
+            
+                    return;
+                }
+                window.location.href = `/admin/salesreport?filter=custom&startDate=${startDate}&endDate=${endDate}`;
+            
+            }
+
+            function generatePDF(){
+                fetch('/admin/generatePdfSalesReport',{
+                    method:'POST',
+                    headers: { 'Content-Type': 'application/json'}
+                })
+                .then(res => res.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);                    
+                    window.open(url, '_blank');
+                })
+                .catch(err => {
+                    console.error('error pdf',err);
+                })
+            }
+
+            function generateEXCEL(){
+                fetch('/admin/generateExcelSalesReport',{
+                    method:'POST',
+                    headers: { 'Content-Type': 'application/json'}
+                })
+                .then(res => res.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'sales_report.xlsx');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(err => {
+                    console.error('error pdf', err);
+                })
+            }
+            
+            </script>
+            
+            <%- include("../partials/admin-footer.ejs") -%>              
+
+
+
+            

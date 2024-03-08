@@ -1,0 +1,352 @@
+<%- include("../partials/user-header.ejs") -%>
+
+<link rel="stylesheet" href="/style/checkout.css">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+<div class="container-fluid mt-2">
+    <button id="gobackbtn" onclick="goBack()" type="button">
+      <i class="bi bi-arrow-left">Go Back</i>
+    </button>
+  </div>
+
+<div class="container mt-3">
+
+    <div class="row">
+        <div class="col-xl-7">
+
+            <div class="card">
+                <div class="card-body">
+                    <ol class="activity-checkout mb-0 px-4 mt-3">
+                        <li class="checkout-item">
+                            <div class="avatar checkout-icon p-1">
+                                <div class="avatar-title rounded-circle bg-primary">
+                                    <i class="bx bxs-truck text-white font-size-20"></i>
+                                </div>
+                            </div>
+                            <div class="feed-item-list">
+                                <div>
+                                    <h5 class="font-size-16 mb-1">Shipping Info</h5>
+                                    <p class="text-muted text-truncate mb-4"></p>
+                                    <div class="mb-3">
+                                                <!-- here end addres check -->
+
+                                               
+                                                <% if(addresses.length !== 0 ) { %>
+                                                    <% for(let i = 0; i < addresses.length ; i++) { %>
+
+                                            <div class="col-lg-12 mt-1 col-sm-12">
+                                                <div data-bs-toggle="collapse" id="displayAddress<%= i %>">
+                                                    <label class="card-radio-label mb-0">
+                                                        <input type="radio" name="address" id="info-address1" value="<%= i %>" class="card-radio-input" onchange="toggleShippingRow()" >
+                                                        <div class="card-radio text-truncate p-3">
+                                                            <span class="fs-14 mb-4 d-block">Address <%= i+1 %></span>
+                                                            <span class="fs-14 mb-2 d-block"><%= addresses[i].name %></span>
+                                                            <span class="text-muted fw-normal text-wrap mb-1 d-block"> <%= addresses[i].address %> <%= addresses[i].locality %> <%= addresses[i].city %> -<%= addresses[i].pincode %></span>
+                                                           
+                                                            <span class="text-muted fw-normal d-block">Mob: <%= addresses[i].number %></span>
+                                                        </div>
+                                                    </label>
+                                                    <div class="edit-btn bg-light  rounded">
+                                                        <a href="#" data-bs-toggle="tooltip" onclick="toggleEditForm('<%= i %>')" data-placement="top" title="" data-bs-original-title="Edit">
+                                                            <i class="bx bx-pencil font-size-16"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <!-- here start -->
+                                                <div id="formedit<%= i %>" style="display: none;">
+                                                    <form action="/profileAddressedit?index=<%= i %>&from=checkout" method="POST"  onsubmit="return editaddressvalidation()">
+                                                        <div class="form-row d-flex justify-content-between">
+                                                            <div class="form-group col-md-5">
+                                                                <label for="name">Name <span style="color: red;">*</span></label>
+                                                                <input type="name" class="form-control" name="name" id="nameedit" value="<%= addresses[i].name %>" placeholder="Enter Name"  autocomplete="name" required>                
+                                                            </div>
+                                                            <div class="form-group col-md-5 ">
+                                                                <label for="number">Phone Number <span style="color: red;">*</span></label>
+                                                                <input type="number" class="form-control" name="number" id="numberedit" value="<%= addresses[i].number %>" placeholder="Enter Phone Number" autocomplete="phonenumber"  maxlength="10" required>   
+                                                                <small class="error-message text-danger" id="numbereditError"></small>             
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row mt-2 d-flex justify-content-between">
+                                                            <div class="form-group col-md-5">
+                                                                <label for="pincode">Pincode <span style="color: red;">*</span></label>
+                                                                <input type="number" class="form-control" name="pincode" id="pincodeedit" value="<%= addresses[i].pincode %>" placeholder="Enter Pincode" autocomplete="pincode" pattern="[0-9]+" maxlength="6" required> 
+                                                                <small class="error-message text-danger" id="pincodeeditError"></small>               
+                                                            </div>
+                                                            <div class="form-group col-md-5 ">
+                                                                <label for="locality">Locality <span style="color: red;">*</span></label>
+                                                                <input type="text" class="form-control" name="locality" id="localityedit" value="<%= addresses[i].locality %>" placeholder="Enter Locality " autocomplete="locality" required>                
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row mt-2 d-flex justify-content-between">
+                                                            <div class="form-group col-md-12 ">
+                                                                <label for="address">Address <span style="color: red;">*</span></label>
+                                                                <input type="text" class="form-control costom-hight-address" name="address" value="<%= addresses[i].address %>" id="addressedit" placeholder="Enter Address (Area and Street)" autocomplete="address" required> 
+                                                                <small class="error-message text-danger" id="addresseditError"></small>
+                                                            </div>                       
+                                                        </div>
+                                                        <div class="form-row mt-2 d-flex justify-content-between">
+                                                            <div class="form-group col-md-5">
+                                                                <label for="city">City <span style="color: red;">*</span></label>
+                                                                <input type="text" class="form-control" name="city" id="cityedit" value="<%= addresses[i].city %>" placeholder="Enter City/District/Town"  autocomplete="city" required>                
+                                                            </div>
+                                                            <div class="form-group col-md-5 ">
+                                                                <label for="landmark">Land Mark</label>
+                                                                <input type="text" class="form-control" name="landmark" value="<%= addresses[i]?.landmark %>" id="landmarkedit" placeholder="Enter Land Mark (optional)" autocomplete="landmark" >                
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row mt-4 d-flex ">
+                                                            <button type="submit" class="btn  btn-primary ">Save</button>
+                                                            <button onclick="toggleEditForm('<%= i %>'); return false;"  class="btn ms-2 btn-outline-dark">Cancel</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <!-- end -->
+                                            </div>
+                                            <% } } else { %>
+                                                <h4>Not Stored Address</h4>
+                                                <% } %>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="checkout-item">
+                            <div class="avatar checkout-icon p-1">
+                                <div class="avatar-title rounded-circle bg-primary">
+                                    <i class="bx bxs-wallet-alt text-white font-size-20"></i>
+                                </div>
+                            </div>
+                            <div class="feed-item-list">
+                                <div>
+                                    <h5 class="font-size-16 mb-1">Payment Info</h5>
+                                    <!-- <p class="text-muted text-truncate mb-4">Duis arcu tortor, suscipit eget</p> -->
+                                </div>
+                                <div>
+                                    <div class="justify-content-between d-flex">
+                                        <h5 class="font-size-14  mb-3">Payment method :</h5>
+                                        <% if(wallet) { %>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" value="<%= wallet %>" id="flexSwitchCheckDefault">
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">USE Wallet <span class="badge bg-success"><i class="bi bi-wallet2 pe-1"></i> <%= wallet %></span></label>
+                                          </div>                                          
+                                        <% } %>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <!-- <div class="col-lg-3 col-sm-6">
+                                            <div data-bs-toggle="collapse">
+                                                <label class="card-radio-label">
+                                                    <input type="radio" name="pay-method" id="pay-methodoption1" value="CARD" class="card-radio-input">
+                                                    <span class="card-radio py-3 text-center text-truncate">
+                                                        <i class="bx bx-credit-card d-block h2 mb-3"></i>
+                                                        Credit / Debit Card
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div> -->
+                                        
+                                        <div class="col-lg-3 col-sm-6">
+                                            <div>
+                                                <label class="card-radio-label">
+                                                    <input type="radio" name="pay-method" id="pay-methodoption2" value="RAZORPAY" class="card-radio-input">
+                                                    <span class="card-radio py-3 text-center text-truncate">
+                                                        <i class="bi bi-bank h3 mb-3 d-block"></i>
+                                                        Razorpay
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-sm-6">
+                                            <div>
+                                                <label class="card-radio-label">
+                                                    <input type="radio" name="pay-method" id="pay-methodoption3" value="COD" checked class="card-radio-input" >
+
+                                                    <span class="card-radio py-3 text-center text-truncate">
+                                                        <i class="bx bx-money d-block h2 mb-3"></i>
+                                                        <span>Cash on Delivery</span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+        <input type="hidden" name="cartdocs" id="cartdocs" value="<%= JSON.stringify(cartdocs) %>"  >
+        <input type="hidden" name="totalPrice" id="totalPrice" value="<%= amount.totalPrice %>"  >
+        <input type="hidden" name="walletdedect" id="walletdedect" value="0"  >
+        <div class="col-xl-5">
+            <div class="card checkout-order-summary">
+                <div class="card-body">
+                    <div class="p-3 bg-light mb-3">
+                        <h5 class="font-size-16 mb-0">Order Summary </h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-centered mb-0 table-nowrap">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0" style="width: 110px;" scope="col">Product</th>
+                                    <th class="border-top-0" scope="col">Product Name</th>
+                                    <th class="border-top-0 text-end" scope="col">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% let subtotal =0 ; for(let i = 0 ; i< cartdocs.length ; i++ ) { subtotal += cartdocs[i].price.OriginalPrice * cartdocs[i].quantity %>
+                                <tr>
+                                    <th scope="row"><img src="/assets/uploads/<%= cartdocs[i].images[0] %>" alt="product-img" title="product-img" class="avatar-lg rounded"></th>
+                                    <td style="max-width: 130px;">
+                                        <h5 class="font-size-16 text-truncate"><%= cartdocs[i].title %> </h5>
+                                        <p class="text-muted mb-0"><%= cartdocs[i].subtitle %></p>
+                                        <p class="text-muted mb-0 mt-1"><i class="bi bi-currency-rupee"></i> <%= cartdocs[i].price.OriginalPrice %> x <%= cartdocs[i].quantity %></p>
+                                    </td>
+                                    <td class="text-end"><i class="bi bi-currency-rupee"></i> <%= cartdocs[i].price.OriginalPrice * cartdocs[i].quantity %> </td>
+                                </tr>
+                                <% } %>
+                                <tr>
+                                    <td colspan="2">
+                                        <h5 class="font-size-14 m-0">Sub Total :</h5>
+                                    </td>
+                                    <td class="text-end ">
+                                        <i class="bi bi-currency-rupee"></i> <%= subtotal %>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2">
+                                        <h5 class="font-size-14 m-0">Discount :</h5>
+                                    </td>
+                                    <td class="text-end">
+                                        - <i class="bi bi-currency-rupee"></i> <%= amount.dis %>
+                                    </td>
+                                </tr>
+                                <tr id="shippingRow" style="display: none;">
+                                    <td colspan="2">
+                                        <h5 class="font-size-14 m-0">Shipping :</h5>
+                                    </td>
+                                    <td class="text-end">
+                                        <i class="bi bi-currency-rupee"></i> 40
+                                    </td>
+                                </tr>                                                              
+                                <tr id="walletRow" style="display: none;">
+                                    <td colspan="2">
+                                        <h5 class="font-size-14 m-0">wallet :</h5>
+                                    </td>
+                                    <td class="text-end">
+                                        - <span id="walletAmount" class="text-success"></span>
+                                    </td>
+                                </tr>                                                              
+                                <tr id="couponsearch">                                        
+                                        <td colspan="2">
+                                            <input type="text" class="form-control mt-1" id="couponCode"  placeholder="Enter Coupon Code" >
+                                            <small class="text-danger p-0 ms-2" class="error-message" id="couponCodeError"></small>
+                                        </td>
+                                        <td class="text-success text-end">
+                                            <button class="btn btn-outline-success" onclick="couponapply()" type="submit">Apply</button>
+                                        </td>
+                                </tr> 
+                                <tr id="discountRow" style="display: none;">
+                                    <td colspan="2" >
+                                        <h5 class="font-size-14 m-0"><a class="text-muted" href="#" onclick="hideCoupondiv('<%= amount.totalPrice %>')"><i class="bi bi-x"></i></a> Coupon Discount :<small id="maxAmountInCoupon"></small></h5>
+                                    </td>
+                                    <td class="text-end" >- <span id="discountAmount" class="text-success"></span>%</td>
+                                </tr>                                                             
+                                <tr class="bg-light">
+                                    <td colspan="2">
+                                        <h5 class="font-size-14 m-0">Total:</h5>
+                                    </td>
+                                    <td class="text-end">
+                                        <i class="bi bi-currency-rupee"></i> <b id="totalAmount"><%= amount.totalPrice %></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="col mt-2">
+                            <div class="text-end mt-2 mt-sm-0">
+                                <a href="#" onclick="submitorder()" class="btn btn-success">
+                                    <i class="mdi mdi-cart-outline me-1"></i> Proceed </a>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+    <% if(message) { %>
+        <div id="toaster" class="toast show align-items-center bottom-2 end-2 p-1 position-fixed  border-0 <%= message.bg %> " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+          <div class="d-flex">
+            <div id="tosterbody" class="toast-body"><%= message.innertext %></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+        <% } %> 
+        <div id="toasteres" class="toast  align-items-center bottom-2 end-2 p-1 position-fixed  border-0  " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+          <div class="d-flex">
+            <div id="tosterbodys" class="toast-body"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+
+        <!-- checker confirm message -->
+        <div class="modal fade" id="orderconfirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Please confirm</h5>
+                  <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p class="" id="">Are you sure you want to submit changes? </p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                  <button type="button" id="confirmorder" onclick="confirmorder()"  data-bs-dismiss="modal" class="btn  btn-success">Submit</button>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end -->
+          <!-- start congrates message -->
+          <div id="greeting" class="modal fade">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="icon-box">
+                            <!-- <i class="material-icons">&#xE876;</i> -->
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <h4 class="modal-title w-100">Awesome!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-center">Your booking has been confirmed.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button class="btn btn-success btn-block" data-dismiss="modal">OK</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <!-- end -->
+    
+</div>
+
+
+<script src="/script/checkout.js"></script>
+<script src="/script/profileAddress.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<%- include("../partials/user-footer.ejs") -%>

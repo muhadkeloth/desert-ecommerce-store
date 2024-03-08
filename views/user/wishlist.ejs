@@ -1,0 +1,193 @@
+<%- include("../partials/user-header.ejs") -%>
+<%- include("../partials/profile_sidebar.ejs") -%>
+<!-- important -->
+<link rel="stylesheet" href="/style/prodileAddress.css">
+
+
+<div class="col-md-8 col-sm-10 "><!-- end important-->
+    <div class="col-md-10 offset-md-1">
+        <h3 for="" class="d-flex justify-content-between">Profile Wishlist Management- <%= totalItems %><span class="iconblock "><i class="bi bi-list"></i></span> </h3>
+        <hr>
+
+        <% if(!wishlistDetails.length){  %>
+            <h6>Wishlist is Empty</h6>
+            <%  } else { for(let j = 0 ; j < wishlistDetails[0].items.length ; j++) { %>                
+            <div class="row rounded-border mt-1 p-2" id="wishlistRow_<%= wishlistDetails[0].items[j].productId %>" onclick="productdetailpage('<%= wishlistDetails[0].items[j].productId %>')"   style="cursor: pointer;">   
+                <div class="col-lg-3 col-md-12 mb-4 mb-lg-0 d-flex flex-colum justify-content-between">
+                  <!-- Image -->
+                  <div  class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                    <img src="/assets/uploads/<%= wishlistDetails[0].items[j].image[0] %>"
+                      class="w-100" alt="product image" />
+                  </div>
+                  <!-- Image -->
+                </div>  
+                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                  <!-- Data -->
+                  <p><strong><%= wishlistDetails[0].items[j].title %></strong></p>
+                  <p>quantity: <%= wishlistDetails[0].items[j].quantity %></p>
+                  <input type="hidden" name="qty" id="qty" value="<%= wishlistDetails[0].items[j].quantity %>">
+                  <p>size:  <%= wishlistDetails[0].items[j].size %> </p>
+                  <input type="hidden" name="sizeSelect" id="sizeSelect" value="<%= wishlistDetails[0].items[j].size %>">
+                  <% if(wishlistDetails[0].items[j].offer) { %>
+                    <small class="text-muted"><del><i class="bi bi-currency-rupee"></i> <%= wishlistDetails[0].items[j].price %></del></small>
+                    <strong class="text-success"> <i class="bi bi-currency-rupee"></i> <%= wishlistDetails[0].items[j].price * (1- wishlistDetails[0].items[j].offer / 100)  %> </strong>
+                    <% }else{ %>
+                    <strong class=""> <i class="bi bi-currency-rupee"></i> <b></b><%= wishlistDetails[0].items[j].price  %></b> </strong>
+                    <% } %>
+                </div>  
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0 d-flex justify-content-end ">
+                    <div class="d-block">
+                        <button type="button" onclick="addtocart('<%= wishlistDetails[0].items[j].productId %>'); event.stopPropagation();" class="btn btn-primary btn-sm mb-2 " data-mdb-toggle="tooltip"
+                          title="Add to cart">
+                          <i class="bi bi-cart-plus"></i>
+                        </button>
+                    </div>
+                    <div class="d-block">
+                        <button type="button" onclick="confirmdetete('<%= wishlistDetails[0].items[j].productId %>'); event.stopPropagation();" class="btn ms-2 btn-danger  btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
+                            title="Remove item">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                    </div>
+                </div>
+
+                <!-- here start toast -->
+                <div class="toast " id="toastdelete_<%= wishlistDetails[0].items[j].productId %>" onclick="event.stopPropagation();" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-body ">
+                      <p class="text-danger">  Are you sure to remove item!</p>
+                     
+                      <div class="mt-2 pt-2 border-top">
+                        <button type="button" onclick="deletewishlistitem('<%= wishlistDetails[0].items[j].productId %>')" class="btn btn-danger btn-sm">Remove Product</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <!-- end of toast -->
+
+            </div>
+              <% }} %>              
+
+        <!-- pagination -->
+        <%  if( totalPages > 1) { %>
+            <div  class="d-flex mt-3 justify-content-center">
+                <ul class="pagination ">
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === page ? 'active' : '' %>">
+                            <a class="page-link" href="/wishlist?page=<%= i %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+            <% } %> 
+
+            <div id="toaster" class="toast hide align-items-center bottom-2 end-2 p-1 position-fixed  border-0  " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+                <div class="d-flex">
+                  <div id="tosterbody" class="toast-body"></div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+              </div>
+
+     <!-- important -->
+</div>
+</div>
+</main>
+
+<script>
+     function confirmdetete(cartId){
+    const toggleid = document.getElementById('toastdelete_' + cartId);
+    toggleid.classList.add('show');    
+  }
+
+  function productdetailpage(productId){
+    window.location.href = `/productdetails?productId=${productId}`;
+  }
+
+  function addtocart(productId){
+  const size = document.getElementById('sizeSelect').value;
+  const qty = document.getElementById('qty').value;
+  const data = {
+    size:size,qty:qty
+  }
+  console.log(data);
+  fetch('/addtocart?productId=' + productId,{
+    method: 'POST',
+     headers: {'Content-Type': 'application/json' },
+    body:JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.result === true){
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-success');
+        tosterbody.innerText = data.message;               
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-success');
+          toaster.classList.add('hide');
+        }, 2000);
+      }else{
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-danger');
+        tosterbody.innerText = data.message; 
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-danger');
+          toaster.classList.add('hide');
+        }, 2000);
+    }
+  })
+  .catch(err => {
+    console.error('error wishlist  addingcart:',err);
+  })
+}
+  
+
+
+  function deletewishlistitem(itemId){
+    fetch(`/wishlistitemdelete?productId=${itemId}`,{
+      method:'DELETE',
+      headers:{'Content-Type': 'application/json'},
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      if(data.success){
+        const toggleid = document.getElementById('toastdelete_' + itemId);
+        toggleid.classList.remove('show');    
+        const deleteRow = document.getElementById(`wishlistRow_${itemId}`);
+        deleteRow.parentNode.removeChild(deleteRow);
+        // toastalert
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-success');
+        tosterbody.innerText = data.message;               
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-success');
+          toaster.classList.add('hide');
+        }, 2000);
+        // location.reload();
+      }else{
+        // toastalertfalied
+        const toaster = document.getElementById('toaster');
+        const tosterbody = document.getElementById('tosterbody');
+        toaster.classList.remove('hide');
+        toaster.classList.add('show','text-bg-danger');
+        tosterbody.innerText = data.message; 
+        setTimeout(() => {
+          toaster.classList.remove('show','text-bg-danger');
+          toaster.classList.add('hide');
+        }, 2000);
+      }
+    })
+    .catch(err => {
+      console.error('error deleting cart items ',err);
+    })
+  }
+
+
+</script>
+
+ <%- include("../partials/user-footer.ejs") -%>

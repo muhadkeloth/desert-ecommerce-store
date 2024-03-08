@@ -1,0 +1,30 @@
+<%- include("../partials/auth-header.ejs") -%>
+
+<div class="container-fluid div_logo"></div>
+<div class="d-fle flex-column justify-content-center">
+<div class="card col-md-6 offset-md-3  ">
+    <div class="card-body">
+        <h3 class="header-color card-title">OTP Verification</h3>
+        <form action="/otpvalidation" method="post" onsubmit="return validateOtp()">          
+            <div class="form-group mt-4">
+                <label for="otp">Enter OTP:</label>
+                <input type="text" class="form-control <%- locals.message === 'otpError' ? 'border border-danger' : '' %>
+                 mt-2" id="otp" name="otp"  placeholder="check inboxes" autocomplete="off">
+                <small class="error-message text-danger" id="otpError"><%= locals.message === 'otpError' ? locals.error.message : '' %></small>
+                <input type="hidden" class="form-control" id="email" name="email" value="<%= email %>"  >
+                <input type="hidden" class="form-control" id="from" name="from" value="<%= from %>"  >
+            </div>
+            <div class="text-center p-3">
+                <button class="btn btn-primary submit_button" type="submit"><span class="submit_text">VERIFY OTP</span></button>
+            </div>
+        </form>
+        <div class="text-center d-flex justify-content-center mt-2">
+            <p class="text-secondary">Didn't get otp?
+                <a class="otpResend" href="/login">Resend</a>
+                <div class="countdown ml-X header-color"></div>
+            </p>
+        </div>
+    </div>
+</div>
+<script src="./script/otpvalidation.js"></script>
+<%- include("../partials/auth-footer.ejs") -%>

@@ -1,0 +1,85 @@
+body{
+    font-family: 'Poppins',sans-serif;
+}
+
+
+.card{
+    margin-top: 60px;
+    margin-bottom: 80px;
+    border-width: 2px;
+    box-shadow: 1px 1px 3px 5px rgba(125, 125, 127, 0.205);
+ }
+ .card_login{
+    margin-top: 120px;
+}
+@media (max-width:991px) {
+    .auth-banner{
+        height:180px;
+    } 
+    .card{
+        margin-top: 20px;
+    }   
+}
+@media (min-width:992px){
+    .auth-banner{
+        min-height: 100vh;
+    }
+}
+.auth-banner{
+    background-image:url(../img/Mens.webp);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.div_logo{
+    margin-left: 10px;
+    width: 250px;
+    height: 40px;
+    padding: 30px;
+    background: url(../img/desert-logos_black.png);
+    background-position: center;
+    background-size: cover;
+    cursor:pointer
+}
+.div_card_bg{
+    background: rgb(244, 244, 244,2);
+}
+.header-color{
+    color: rgb(244, 88, 1,1);
+}
+.form-control{
+    border: 0;
+    background-color: rgb(255, 246, 244,1);
+}
+.submit_button{
+    background-color: rgb(244, 88, 1,1);
+    border-color: rgb(244, 88, 1,1);
+    border-radius: 23px;
+    padding: 10px 30px;
+}
+.submit_button:hover{
+    background-color: white;
+    border-color: rgb(244, 88, 1,1);
+    color: rgb(244, 88, 1,1);
+}
+.submit_text{
+    font-weight: 600;  
+    letter-spacing: 2px;  
+    font-size: 16px;
+}
+a{
+    text-decoration-line: none;
+    color: rgb(244, 88, 1,1);
+}
+.forgot_password{
+    color: rgba(0, 0, 0, 0.767);
+    font-weight: 300;
+    font-size: 14px;
+}
+.otpResend{
+    display: none;
+}
+
+
+
+

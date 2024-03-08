@@ -1,0 +1,63 @@
+<%- include("../partials/user-header.ejs") -%>
+
+
+ <style>
+    .user-info {
+    margin-bottom: 10px;
+  }
+
+  .label {
+    font-weight: bold;
+    display: inline-block;
+    width: 100px; /* Adjust as needed */
+  }
+
+  .value {
+    margin-left: 30px; 
+  }
+ </style>
+<%- include("../partials/profile_sidebar.ejs") -%>
+        <div class="col-md-8 col-sm-10 ">
+            <div class="col-md-6 offset-md-2">
+                
+                <h3 for="" class="d-flex justify-content-between">Profile Details<span class="iconblock "><i class="bi bi-list"></i></span> </h3><hr>
+                <div class="user-info mt-5">
+                    <label class="label">User Name:</label>
+                    <span class="value" id="username"><%= userdetails.userName %></span>
+                  </div>
+                
+                  <div class="user-info">
+                    <label class="label">Email:</label>
+                    <span class="value" id="email"><%= userdetails.email %></span>
+                  </div>
+                  <div class="user-info">
+                    <label class="label">Contact Number:</label>
+                    <span class="value" id="email"><%= userdetails.phoneNumber %></span>
+                  </div>
+
+            </div>
+            <% if(message) { %>
+                <div id="toaster" class="toast show align-items-center bottom-2 end-2 p-1 position-fixed  border-0 <%= message.bg %> " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+                  <div class="d-flex">
+                    <div id="tosterbody" class="toast-body"><%= message.innertext %></div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                </div>
+                <% } %>  
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const toastElement = document.getElementById('toaster');
+    if(toastElement){
+        setTimeout(function () {
+          const toast = new bootstrap.Toast(toastElement);
+          toast.hide();
+        }, 2000);
+    }
+  });
+</script>
+
+<%- include("../partials/user-footer.ejs") -%>

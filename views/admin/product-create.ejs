@@ -1,0 +1,166 @@
+<%- include('../partials/admin-header.ejs') -%>
+
+<link rel="stylesheet" href="/style/nav-admin.css">
+<link rel="stylesheet" href="/style/products-admin.css">
+
+<h5 class="">Create Products...</h5>
+</div>
+<div class="col-12">
+<div class="flex-column justify-content-center col-md-12 ">
+   <div class="card mt-4  col-md-6 offset-md-3">
+      <div class="card-body">
+          <h3 class="header-color card-title">Create Product</h3>
+
+
+          <form action="/admin/products/createProduct" id="formproduct" method="post" onsubmit="return productformValidation()" enctype="multipart/form-data">
+              <div class="form-group mt-4">
+                  <label for="title">Title*</label>
+                  <input type="name" class="form-control <%- locals.message === 'titleError' ? 'border border-danger' : '' %>
+                              mt-2" name="title" id="title" placeholder="Enter product title"
+                       autocomplete="name">
+                  <small class="error-message text-danger" id="titleError">
+                      <%= locals.message==='titleError' ? locals.error.message : '' %>
+                  </small>
+              </div>
+              <div class="form-group mt-4">
+                  <label for="subtitle">SubTitle*</label>
+                  <input type="text " class="form-control <%- locals.message === 'subtitleError' ? 'border border-danger' : '' %>
+                              mt-2" name="subtitle" id="subtitle" placeholder="Enter product subtitle"
+                       autocomplete="name">
+                  <small class="error-message text-danger" id="subtitleError">
+                      <%= locals.message==='subtitleError' ? locals.error.message : '' %>
+                  </small>
+              </div>
+              <div class="form-group mt-4">
+                  <label for="description">Description*</label>
+                  <input type="text" class="form-control <%- locals.message === 'descriptionError' ? 'border border-danger' : '' %>
+                              mt-2" name="description" id="description" placeholder="Enter product description"
+                       autocomplete="name">
+                  <small class="error-message text-danger" id="descriptionError">
+                      <%= locals.message==='descriptionError' ? locals.error.message : '' %>
+                  </small>
+              </div>
+              <div class="form-group mt-4">
+                  <label for="brand">Brand Name*</label>
+                  <input type="text" class="form-control <%- locals.message === 'brandError' ? 'border border-danger' : '' %>
+                              mt-2" name="brand" id="brand" placeholder="Enter product brand Name"
+                       autocomplete="name">
+                  <small class="error-message text-danger" id="brandError">
+                      <%= locals.message==='brandError' ? locals.error.message : '' %>
+                  </small>
+              </div>           
+
+              <div class="form-group mt-4">
+                <fieldset class="boxes-details mb-3">
+                    <legend class="fs-6 fw-normal">Price</legend>                                    
+                    <div class="row">
+                      <div class="col-2">
+                        <label for="mrp" class="form-label">MRP*:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number"  class="form-control form-control-sm" id="mrp" name="mrp" placeholder="MRP">
+                        <small class="error-message text-danger" id="mrpError"></small>
+                      </div>                      
+                      <div class="col-2">
+                        <label for="offerprice" class="form-label">Offer Price:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number"  class="form-control form-control-sm" id="offerprice" name="offerprice" placeholder="Offer Price">
+                      </div>                      
+                    </div>
+                    </fieldset>
+              </div>
+
+
+        
+
+              <!-- start -->
+              <div class="form-group mt-4" id="colordiv">
+                <label for="">Select Colors:*</label>
+                <div class="col-12">
+              
+                  <% const colors = ['red', 'black', 'pink', 'grey', 'green', 'blue', 'white', 'multi', 'brown', 'yellow', 'purple']; %>
+                  
+                  <% colors.forEach(color => { %>
+                    <div class="form-check form-check-inline" title="<%= color.charAt(0).toUpperCase() + color.slice(1) %>">
+                      <label class="form-check-label" for="<%= `Checkbox-${color}` %>">
+                        <span class="checkbox-circle for-<%= color %>"></span>
+                      </label>
+                      <input class="form-check-input" type="checkbox" name="colors" id="<%= `Checkbox-${color}` %>" value="<%= color %>" >
+                    </div>
+                  <% }); %>
+              
+                </div>
+                <small class="error-message text-danger" id="checkboxError"></small>
+              </div>
+              
+
+              <!-- end -->
+
+              <div class="form-group mt-4">
+                  <label for="category">Choose Category:*</label>
+                  <select name="category" id="category" class="form-select">
+                    <% category.forEach(data => { %>
+                    <option value="<%= data._id %>"  ><%= data.categoryName %></option>
+                    <% }) %>
+                  </select>
+              </div>
+
+
+        
+
+              <div class="form-group mt-4">
+                <fieldset class="boxes-details mb-3">
+                  <legend class="fs-6 fw-normal">Stock Details</legend>
+                  <% const sizes = ['size40', 'size41', 'size42', 'size43', 'size44']; %>
+                  <% sizes.forEach(size => { %>
+                    <div class="row mb-1">
+                      <div class="col-2">
+                        <label for="<%= size %>" class="form-label">Size <%= size.slice(4) %>:</label>
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control form-control-sm" id="<%= size %>" name="stock[<%= size %>]" placeholder="quantity" >
+                      </div>
+                    </div>
+                  <% }); %>
+                </fieldset>
+              </div>
+              <!--end of size fit  -->
+
+              <div class="form-group mt-4">
+                <label for="imageUpload">Upload Images:*</label>
+                <div class="input-group" id="imageInputdiv">
+                  <input type="file" class="form-control" id="imageUpload" name="imageUpload" multiple accept="image/*">
+                  <button class="btn btn-outline-secondary" type="button" id="imageButton">Browse</button>
+                </div>
+                <di2v class="row mt-3" id="imagePreviewContainer">
+             
+
+                  
+                </di2v>
+                <small class="text-muted">First Image will be highlighted. Max 5 images.</small>
+                <small class="error-message text-danger" id="imageError"></small>
+              </div>
+              <!--  end of image tag-->
+              
+             
+              <div class="text-center p-3">
+                  <button class="btn btn-primary submit_button" type="submit"><span
+                          class="signup_text">SUBMIT</span></button>
+              </div>
+          </form>
+
+
+      </div>
+  </div>
+   
+   
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<script src="/script/products-create.js"></script>
+
+<%- include("../partials/admin-footer.ejs") -%>

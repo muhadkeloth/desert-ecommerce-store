@@ -1,0 +1,123 @@
+<%- include("../partials/user-header.ejs") -%>
+  <%- include("../partials/profile_sidebar.ejs") -%>
+    <!-- important -->
+
+    <style>
+      .rounded-border {
+        border: 2px solid black;
+        border-radius: 5px;
+      }
+    </style>
+    <div class="col-md-8 col-sm-10 ">
+      <div class="col-md-10 offset-md-1">
+        <h3 for="" class="d-flex justify-content-between">Profile Order Management<span class="iconblock "><i
+              class="bi bi-list"></i></span> </h3>
+        <hr>
+
+        <% if(!orderDetails.length){ %>
+          <h6>Order is Empty</h6>
+          <% } else { for(let i=0 ; i < orderDetails.length ; i++) { %>
+
+            <div class="row rounded-border mt-1 p-2" onclick="orderdetails('<%= orderDetails[i]._id %>')"
+              style="cursor: pointer;">
+
+              <div class="col-lg-6 col-md-6 mb-4 mt-2 mb-lg-0">
+                <p><strong>OrderId: #<%= orderDetails[i]._id %></strong></p>
+                <p class="<%= orderDetails[i].status !== 'Cancelled' ? 'text-info' : 'text-waring' %>">order Date: <%=
+                    orderDetails[i].orderDate %>
+                </p>
+                <% if(orderDetails[i].status !=='Cancelled' && orderDetails[i].status !=='Placed' && orderDetails[i].status !=='PAYMENT_FAILED' ) { %>
+                  <p class="text-success">delivery Date: <%= orderDetails[i].deliveryDate %>
+                  </p>
+                  <% } %>
+              </div>
+              <div class="col-lg-6 col-md-6 mb-2 mt-2 mb-lg-0 ">
+                <p class="text-end text-md-center ">
+                  <strong class="text-md-end "> Total : </strong>
+                  <strong
+                    class="text-md-end <%= orderDetails[i].status !== 'Cancelled' ? 'text-success' : 'text-warning' %> ">
+                    <i class="bi bi-currency-rupee"></i> <%= orderDetails[i].totalPrice %> </strong>
+                </p>
+                <p class="text-end text-md-center ">
+                  <strong class="text-md-end text-muted"> Statue : </strong>
+                  <strong
+                    class="text-md-end <%= orderDetails[i].status === 'Placed' ? 'text-warning' : orderDetails[i].status === 'Confirmed' ? 'text-info' : orderDetails[i].status === 'Delivered' ? 'text-success' : 'text-danger' %> ">
+                    <%= orderDetails[i].status %>
+                  </strong>
+                </p>
+              </div>
+              <hr class="my-1" />
+
+
+              <% for(let j=0 ; j < orderDetails[i].items.length ; j++) { %>
+                <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                  <!-- Image -->
+                  <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light"
+                    style="cursor: pointer;">
+                    <img src="/assets/uploads/<%= orderDetails[i].items[j].image[0] %>" class="w-100"
+                      alt="Blue Jeans Jacket" />
+                  </div>
+                  <!-- Image -->
+                </div>
+
+                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                  <!-- Data -->
+                  <p><strong>
+                      <%= orderDetails[i].items[j].title %>
+                    </strong></p>
+                  <p>quantity: <%= orderDetails[i].items[j].quantity %>
+                  </p>
+                  <p>size: <%= orderDetails[i].items[j].size %>
+                  </p>
+                  <!-- Data -->
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                  <!-- Quantity -->
+                  <!-- <div class="d-flex mb-4" style="max-width: 300px">
+                    
+                  </div> -->
+                  <!-- Quantity -->
+                  <!-- Price -->
+                  <p class="text-start text-md-center mt-3">
+                    <strong class="text-muted"> Price:</strong>
+                    <strong class="text-success"> <i class="bi bi-currency-rupee"></i> <%= orderDetails[i].items[j].price %> * <%=
+                          orderDetails[i].items[j].quantity %></strong>
+                  </p>
+                  <!-- Price -->
+                </div>
+
+                <hr class="my-4" />
+                <!-- </div> -->
+                <% } %>
+
+            </div>
+            <% }} %>
+
+              <!-- pagination -->
+              <% if( totalPages> 1) { %>
+                <div class="d-flex mt-3 justify-content-center">
+                  <ul class="pagination ">
+                    <% for (let i=1; i <=totalPages; i++) { %>
+                      <li class="page-item <%= i === page ? 'active' : '' %>">
+                        <a class="page-link" href="/orders?page=<%= i %>">
+                          <%= i %>
+                        </a>
+                      </li>
+                      <% } %>
+                  </ul>
+                </div>
+                <% } %>
+
+                  <!-- important -->
+      </div>
+    </div>
+    </main>
+
+
+    <script>
+      function orderdetails(orderId) {
+        window.location.href = '/orderdetails?orderId=' + orderId
+      }
+    </script>
+
+    <%- include("../partials/user-footer.ejs") -%>

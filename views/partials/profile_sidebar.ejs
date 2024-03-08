@@ -1,0 +1,14 @@
+<link rel="stylesheet" href="/style/profileland_common.css"></link>
+
+<main class="container">
+    <div class="row justify-content-center mt-5 d-flex">
+        <div class="col-md-3  menudiv">
+            <h3 for=""><i class="bi bi-person"> </i>Profile dash</h3><hr>
+            <a class="pt-2 pb-2 <%= title === 'Edit profile' ? 'sidebarpointer' : '' %> " href="/profileEdit" ><i class="bi bi-person-circle"></i> Edit Profile</a>
+            <a class="pt-2 pb-2 <%= title === 'Edit password' ? 'sidebarpointer' : '' %> " href="/profilechangepassword" ><i class="bi bi-key"></i> Change Password </a>
+            <a class="pt-2 pb-2 <%= title === 'Address Info' ? 'sidebarpointer' : '' %>" href="/profileAddress" ><i class="bi bi-building-add"></i> Manage Address</a>
+            <a class="pt-2 pb-2 <%= title === 'My Orders' ? 'sidebarpointer' : '' %>" href="/orders" ><i class="bi bi-pin-map"></i> Manage Orders</a>
+            <a class="pt-2 pb-2 <%= title === 'Wallet' ? 'sidebarpointer' : '' %>" href="/wallet" ><i class="bi bi-wallet2"></i> My Wallet</a>
+            <a class="pt-2 pb-2 <%= title === 'Wishlist' ? 'sidebarpointer' : '' %>" href="/wishlist" ><i class="bi bi-heart"></i> My Wishlist</a>
+            <a class="pt-2 pb-2 " href="/logout" ><i class="bi bi-box-arrow-in-left"></i> Logout</a>
+        </div>

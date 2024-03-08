@@ -1,0 +1,394 @@
+<%- include("../partials/user-header.ejs") -%>
+  <%- include("../partials/profile_sidebar.ejs") -%>
+    <!-- important -->
+
+    <div class="col-md-8 col-sm-10 ">
+      <div class="col-md-10 offset-md-1">
+        <h3 for="" class="d-flex justify-content-between">Profile Order Management<span class="iconblock "><i
+              class="bi bi-list"></i></span> </h3>
+        <hr>
+
+        <div class="d-flex justify-content-between align-items-center py-3">
+          <h2 class="h5 mb-0"> Order #<span id="orderId"><%= orderDetails[0]._id %></span>
+          </h2>
+        </div>
+
+        <!-- Main content -->
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Details -->
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="mb-3 d-flex justify-content-between">
+                  <div>
+                    <span class="me-3">placed: <%= orderDetails[0].orderDate %></span>
+                    <!-- <span class="me-3"><%= orderDetails[0].paymentType %></span> -->
+                    <span
+                      class="badge rounded-pill <%= orderDetails[0].status === 'Placed' ? 'bg-secondary' : orderDetails[0].status === 'Confirmed' ? 'bg-info' : orderDetails[0].status === 'Delivered' ? 'bg-success' : 'bg-danger' %>">
+                      <%= orderDetails[0].status %>
+                    </span>
+                  </div>
+                  <% if(orderDetails[0].status==='Delivered' ) { %>
+                    <div class="d-flex">
+                      <div class="dropdown">
+                        <button class="btn btn-link p-0 text-muted" type="button" data-bs-toggle="dropdown">
+                          <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <!-- <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit</a></li> -->
+                          <li><button class="dropdown-item"
+                              onclick="invoicePDF('<%= JSON.stringify(orderDetails) %>')"><i class="bi bi-printer"></i>
+                              Invoice</button></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <% } %>
+                </div>
+                <table class="table table-borderless">
+                  <tbody>
+                    <% let subtotal=0; if(orderDetails[0].item.length) { for(let i=0 ; i < orderDetails[0].item.length ;
+                      i++) { %>
+                      <tr>
+                        <td>
+                          <div class="d-flex mb-2" style="cursor: pointer;">
+                            <div class="flex-shrink-0">
+                              <img src="/assets/uploads/<%= orderDetails[0].item[i].image[0] %>" alt="" width="50"
+                                class="img-fluid">
+                            </div>
+                            <div class="flex-lg-grow-1 ms-3">
+                              <h6 class="small mb-0">
+                                <p class="text-reset">
+                                  <%= orderDetails[0].item[i].title %>
+                                </p>
+                              </h6>
+                              <span class="small">
+                                <%= orderDetails[0].item[i].size %>
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <%= orderDetails[0].item[i].quantity %><small class="text-muted">qty</small>
+                        </td>
+                        <td class="text-end"><i class="bi bi-currency-rupee"></i>
+                          <% subtotal +=orderDetails[0].item[i].quantity * orderDetails[0].item[i].price %>
+                            <%= orderDetails[0].item[i].quantity * orderDetails[0].item[i].price %>
+                        </td>
+                      </tr>
+                      <% }} %>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2">Subtotal</td>
+                      <td class="text-end"><i class="bi bi-currency-rupee"></i>
+                        <%= subtotal %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">Shipping</td>
+                      <td class="text-end"><i class="bi bi-currency-rupee"></i> 40</td>
+                    </tr>
+                    <% if(orderDetails[0].totalPrice < subtotal) { %>
+                      <tr>
+                        <td colspan="2">Discount </td>
+                        <td class="text-success text-end">-<i class="bi bi-currency-rupee"></i>
+                          <%= subtotal - orderDetails[0].totalPrice + 40 %>
+                        </td>
+                      </tr>
+                      <% } %>
+                        <% if(walletHistory?.amount) { %>
+                          <tr>
+                            <td colspan="2">WALLET Discount </td>
+                            <td class="text-success text-end">-<i class="bi bi-currency-rupee"></i>
+                              <%= Math.abs(walletHistory?.amount) %>
+                            </td>
+                          </tr>
+                          <% } %>
+                            <tr class="fw-bold">
+                              <td colspan="2">PAYABLE TOTAL</td>
+                              <td class="text-end"><i class="bi bi-currency-rupee"></i>
+                                <span id="payableAmount">
+                                  <%= walletHistory?.amount ? subtotal  -=Math.abs(walletHistory?.amount) - 40 :
+                                    orderDetails[0].totalPrice %>
+                                </span>
+                              </td>
+                            </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            <!-- Payment -->
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <h3 class="h6">Payment Method: <%= orderDetails[0].paymentType %>
+                    </h3><br>
+                    <!-- <p>Visa -1234 <br> -->
+                    <h3 class="h6">Total: <i class="bi bi-currency-rupee"></i>
+                      <%= orderDetails[0].totalPrice %>
+                        <% if(orderDetails[0].status==='PAYMENT_FAILED' ) { %>
+                          <button onclick="payonline()" id="paybutton" class="badge rounded-pill bg-dark">
+                            PAY NOW
+                          </button>
+                          <% } else { %>
+                            <span class="badge  rounded-pill <%= orderDetails[0].paymentType === 'COD' ? 'bg-warning' : 'bg-success' %>">
+                              <% if(orderDetails[0].status==='Cancelled' || orderDetails[0].status==='Returned' ) { %>
+                                REFUNDED
+                                <% } else { %>
+                                  <%= orderDetails[0].paymentType==='COD' ? 'NOT PAID' : 'PAID' %>
+                                    <% } %>
+                            </span>
+                            <% } %>
+                    </h3>
+                    <% if(orderDetails[0].status !=='Cancelled' && orderDetails[0].status !=='Delivered' &&
+                      orderDetails[0].status !=='Returned' ) { %>
+                      <button type="button" data-bs-toggle="modal" data-bs-target="#myModal"
+                        class="btn btn-outline-danger">Cancel Order</button>
+                      <% } else if(orderDetails[0].status==='Delivered' ) { %>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#myModal"
+                          class="btn btn-outline-danger">Return Order</button>
+                        <% } %>
+                          <!-- start  -->
+                          <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Reason For Cancel/Return</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <!-- Your input field goes here -->
+                                  <input type="text" class="form-control" id="inputField" placeholder="Enter Reason...">
+                                  <small class="text-danger" id="errormessage"></small>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="button" class="btn btn-primary"
+                                    onclick="validation('<%= orderDetails[0]._id %>')" id="cancelorder">Submit</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- end -->
+                  </div>
+                  <div class="col-lg-6">
+                    <h3 class="h6">Delivery address</h3>
+                    <address>
+                      <strong>
+                        <%= orderDetails[0].address.name %>
+                      </strong><br>
+                      <p>
+                        <%= orderDetails[0].address.address %>
+                      </p>
+                      <p title="Phone">Phone No:(+91)<%= orderDetails[0].address.number %>
+                      </p>
+                    </address>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+        <!-- </div> -->
+        <div id="toasteres" class="toast  align-items-center bottom-2 end-2 p-1 position-fixed  border-0  " style="right: 10px; bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+          <div class="d-flex">
+            <div id="tosterbodys" class="toast-body"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+
+        <!-- end -->
+
+
+        <!-- important -->
+      </div>
+    </div>
+    </main>
+    <script src="https://unpkg.com/easyinvoice/dist/easyinvoice.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+
+      async function invoicePDF(orderdetails) {
+        orderdetails = JSON.parse(orderdetails)
+        const date = new Date();
+        const randomNumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+        const products = orderdetails[0].item.map(item => ({
+          quantity: item.quantity,
+          description: item.title,
+          price: item.price
+        }))
+        const subtotal = products.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
+        const price = parseInt(orderdetails[0].totalPrice) - subtotal;
+
+        if (orderdetails[0].totalPrice < subtotal) {
+          products.push({
+            quantity: "",
+            description: "discount",
+            price: parseInt(orderdetails[0].totalPrice) - subtotal
+          })
+        }
+
+        const paymentType = orderdetails[0].paymentType;
+        const paymentStatus = paymentType === 'COD' ? 'Not Paid' : 'Paid';
+        const data = {
+          apiKey: "free",
+          mode: "development",
+          images: {
+            logo: "https://public.easyinvoice.cloud/img/logo_en_original.png"
+          },
+          sender: {
+            company: "Desert Corp",
+            address: "ABC Street 123",
+            zip: "560090",
+            city: "Gandipur",
+            country: "India"
+          },
+          client: {
+            company: orderdetails[0].address.name,
+            address: orderdetails[0].address.address,
+            zip: orderdetails[0].address.city,
+            city: orderdetails[0].address.locality,
+            country: `${orderdetails[0].address.pincode},mob:${orderdetails[0].address.number}`
+          },
+          information: {
+            number: randomNumber,
+            date: orderdetails[0].orderDate.toLocaleString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+            "due-date": date.toLocaleString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+          },
+          products: products,
+          "bottom-notice": `your invoice payment Type : ${paymentType} payment Status : ${paymentStatus}`,
+          settings: {
+            currency: "INR",
+            margin_top: 50,
+            margin_right: 50,
+            margin_left: 50,
+            margin_3bottom: 25
+          },
+          translate: {
+            number: "Bill No",
+            date:"Ordered on"
+          }
+        };
+
+        const result = await easyinvoice.createInvoice(data);
+        easyinvoice.download(`${randomNumber}myInvoice.pdf`, result.pdf);
+
+      }
+
+      function validation(orderId) {
+        const inputreason = document.getElementById('inputField').value;
+        if (!inputreason) {
+          const errormessage = document.getElementById('errormessage');
+          errormessage.innerHTML = 'Enter Reason';
+          inputreason.classList.add('border', 'border-danger');
+        } else {
+          fetch('/ordercancel', {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, inputreason })
+          })
+            .then(res => res.json())
+            .then(data => {
+              location.reload()
+            })
+            .catch(err => {
+              console.error('error in canceling order in user', err);
+            })
+        }
+      }
+
+
+      function payonline(){
+        const totalPrice = parseInt(document.getElementById('payableAmount').textContent) ;
+            const orderId = document.getElementById('orderId').textContent;
+            fetch('/orderdetails/repayment',{
+                method:'POST',
+                headers: {'Content-Type': 'application/json' },
+                body:JSON.stringify({totalPrice, orderId})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data){
+                    if(data.success){
+                        const options = {
+                            key:data.key_id,
+                            amount:data.amount,
+                            currency: 'INR',
+                            name: data.product_name,
+                            image:'./img/desert-logos_black_croped.png',
+                            order_id: data.order_id,
+                            handler:function(res){
+                              razorpayObject.close();
+                              confirmorder(orderId);
+                            },
+                            prefill: {
+                                contact: data.contact,
+                                name: data.name,
+                                email: data.email
+                            },
+                            notes: {
+                                description: data.description
+                            },
+                            theme: {
+                                color: '#f45801'
+                            }
+                        };
+            
+                        const razorpayObject = new Razorpay(options);
+                        razorpayObject.on('payment.failed', function(response){
+                          razorpayObject.close();
+                          const toasteres = document.getElementById("toasteres")
+                          const tosterbodys = document.getElementById("tosterbodys");
+                          toasteres.classList.remove('text-bg-danger','text-bg-success');
+                          toasteres.classList.add('text-bg-danger','show');
+                          tosterbodys.innerText = "Payment Failed" ;
+                          setTimeout(() => {
+                                toasteres.classList.remove('show');
+                                location.reload()
+                              }, 2000);
+                            });
+                            razorpayObject.open();
+                    }else{
+                        alert('error: ' + data.msg);
+                    }
+                }
+              })    
+              .catch(err => {
+                console.error('error order in razorpay confirm:',err);
+              })
+      }
+
+      function confirmorder(orderId){
+        fetch('/orderdetails/updateorderStatus',{
+                method:'POST',
+                headers: {'Content-Type': 'application/json' },
+                body:JSON.stringify({orderId})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data){
+                  const toasteres = document.getElementById("toasteres")
+                              const tosterbodys = document.getElementById("tosterbodys");
+                              toasteres.classList.remove('text-bg-danger','text-bg-success');
+                              toasteres.classList.add('text-bg-success','show');
+                              tosterbodys.innerText = "Payment successful" ;
+                              setTimeout(() => {
+                                toasteres.classList.remove('show');
+                                location.reload();
+                              }, 2000);
+                }
+              })    
+              .catch(err => {
+                console.error('error order update status:',err);
+              })
+      }
+    </script>
+
+
+
+
+    <%- include("../partials/user-footer.ejs") -%>

@@ -1,0 +1,230 @@
+<%- include('../partials/admin-header.ejs') -%>
+
+<link rel="stylesheet" href="/style/nav-admin.css">
+
+<style>
+    ul {
+       list-style-type: none;
+       padding: 0;
+   }
+   li::before {
+       content: "\2B9D"; 
+       margin-right: 5px;
+       color:  green;
+   }
+</style>
+
+<h5 class="">Dashboard</h5>
+            </div>
+            <div class="col-12">
+                <div class="row mt-5 ms-4 justify-content-between me-5">
+                <div class="  col-md-2 d-flex align-items-center p-2 rounded" style="background-color:rgb(255, 237, 225,1) ;">
+                        <div class="col-4 text-center">
+                            <i class="bi bi-cash-stack" style="font-size: 2rem; font-weight: bold;"></i>
+                        </div>
+                        <div class="col-8">
+                            <small class="text-muted">Total Sales</small>
+                            <h4><b><i class="bi bi-currency-rupee"></i> <%= report.totalsales %></b></h4>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center p-0 rounded" style="background-color:rgb(255, 237, 225,1) ;">
+                        <div class="col-4 text-center">
+                            <i class="bi bi-bag" style="font-size: 2rem; font-weight: bold;"></i>
+                        </div>
+                        <div class="col-8">
+                            <small class="text-muted">Total Orders</small>
+                            <h4><b><%= report.totalOrders %></b></h4>
+                        </div>                        
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center p-0 rounded" style="background-color:rgb(255, 237, 225,1) ;">
+                        <div class="col-4 text-center">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE2ElEQVR4nO2ZCYhVZRTHfzPaZNlQo2lhYVqmLVBhi4XR6kgFWkHSxlRgG1ESIbRY0bSQrVNGCxRJIqZWkFhI2V5iiwqW7TjTYlpmM7TI6DT64sD/wuFy373v3vmeJb0/fDDvu+ee+53v7GeghhpqqCGGXYDrgG+B99lJcTjwGVByq4GdDJOAP3T4X4Cf9PcBBfntB1wCPAG8C/wqLZ9OFXE9sE0Hfx4YDDym39Mq5FEHHAfMBL6MadUvE6YqmOY+cqPbn6i9tcCADB79dev+wL8Di4HpwARgvPa/q4YQFzlN2LrVPasHPtX+HB22HKaKbpM0OUFBw+NC0SwKLcQRQLczp21a5ziao4HNovkAODKBz67A96K5IOV794jmtpBC2G2tEeP52rtJv7fK8SOMl/Pbs+3AGzLBkyVoq9Noh7Typ95ZDjwFnAQ8K5rLQgpyjZh+Awx0+w9rv1dmFplHE/Ao8FeKE2etyITPDSXEbsDPKUxvdx/9ArgWGC1hDgFmx/wqWquAG4ATgEHAvsApimK/ObopoQS5yt3QDH00jmbg6wpueZM0Zf6Whn2AH/TOFaEEiXwjWnZblyfQmVmdByxUCO4ENgKfAA8qMuXJ+pEvPRdCiKPEzEzrDOAdJ9DTVS5HDlSwMD+bpQBQGPfp0ObUPgds0f57MecPBUuod7vvlIAFRZnVKasak7GxZ+agG/TMsnE/wqI5Zs4/AkOKMhvrmJhQSZVvZ4LGQqC//LBZprUdOB7YvQiz6c4XysGSXI8i2omExx4y35LWyiJMXtXLl2bQ3SW6zxPqpb6g0eWvkta9RRht1MsWudJgtdNXOUv4ShPxx6qS14v/aUUYrdDLb1cQZie5HGMZOjRaxd/6lleAPfO8PNzdxPyMstywxEWxkBijy4zMq0d7uXCsa2cXZTRM+wNdor2DcGiL+cnNRRmNc2HWyo2RKbSTVQlHfYQ1W32F5Y+LVWBGkatNbXJuWJHXLkadyu7lDjlVcd9o3wQOIwzGxTRjfUsh7AW87BgtVxOVhInOv3pV+KVpMguj5RvRt5eVqcJzwdrTdY7p4jJl+RD141tdJzlbQmYFjjiagKXAS67aGEqgZNWqFjXqVeYCByXQjpAAke+U1Nd3qndfqvGSZfEs1MtHSmovgggT3fojrkrt0YBtWALtwWqqIl+Lr/XSVhaGuummvfOQ/CepHsyN4RoW9Lobn5lix40yl8E6/Ed67+/YVCZNmBWxi7BBxv3AMSEEOhR40UUtyyu3VNCzWBvwgN7ZovyVhTq1E23yGS/UWpl+nxs/O8jrjvEGDSUaMg62QPTtOe2/XtX3LDeDtnUlgWBF3oeOsR2wJSUHNWrkZLSrZXp5Ue9mbjZIDIY62b0fYpiznl2GfoyrvNdopFQpGhUlo9bCRrjB0U//NuiIJdVTywjT7gLHDEWmOzWKjSaZWcsG41VDg/zFN02vJUSbJo2WKjlwPIyvdHO0qmOgbjqqmC3SvZBgSmep++yQM9vkcVRK3rD9x13FvsMwSGOnzS6XPKO2IA+GAee7/7t0J0x/dgjsIE+64rBbZY9pYKQmKHsrd7TIX+aptehKmIaeyb+MURIgafBdSlnmD28BVyt6/WcwQvnAWuh10lCXNDBPGmnRvMs0VUMNNfyf8Q+ius9srUZ4SwAAAABJRU5ErkJggg==">
+                        </div>
+                        <div class="col-8">
+                            <small class="text-muted">Total Products</small>
+                            <h4><b><%= report.totalProdcuts %></b></h4>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center p-0 rounded" style="background-color:rgb(255, 237, 225,1) ;">
+                        <div class="col-4 text-center">
+                            <i class="bi bi-people-fill" style="font-size: 2rem; font-weight: bold;"></i>
+                        </div>
+                        <div class="col-8">
+                            <small class="text-muted">Active Users</small>
+                            <h4><b><%= report.activeUsers %></b></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-md-5 " style="max-height: 350px;">
+                        <p class="m-0">Sales By Categorys</p>
+                        <canvas id="salesCharts" class="bg-light col-md-10 m-2" height="200"></canvas>
+                    </div>
+                    <div class="col-md-6 ">
+                        <!-- <canvas id="salesChart" class="bg-light" width="100%"></canvas> -->
+                        <div class="justify-content-between d-flex">
+                            <p class="m-0">Sales By Categorys</p>
+                            <div>
+                                <button class="btn btn-primary p-0 ps-1 pe-1" onclick="lineChartFilter('daily')">daily</button>
+                                <button class="btn btn-primary p-0 ps-1 pe-1" onclick="lineChartFilter('monthly')">monthly</button>
+                                <button class="btn btn-primary p-0 ps-1 pe-1">yearly</button>
+                            </div>
+                        </div>
+                        <canvas id="salesChart" class="bg-light  col-10" width="100%"></canvas>
+
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row mt-5 mb-5 ms-2 me-2 justify-content-between ">
+                    <div class="col-md-3 pt-2 bg-light">
+                        <b class="text-center">TOP CATEGORYS</b><hr>
+                        <ul id="topcategorys">
+                            <% topOrderCategory.forEach(topcategory =>{ %>
+                                <li><%= topcategory._id %></li>
+                                <% }) %>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 pt-2">
+                        <b class="text-center">TOP PRODUCTS</b><hr>
+                        <ul id="topcategorys">
+                            <% topOrderproduct.forEach(topproduct =>{ %>
+                                <li><%= topproduct.title %></li>
+                                <% }) %>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 pt-2">
+                        <b class="text-center">TOP BRAND</b><hr>
+                        <ul id="topcategorys">
+                            <% brand.forEach(brandname =>{ %>
+                                <li><%= brandname %></li>
+                                <% }) %>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+            </div>
+        </div>
+    </main>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+let salesChart;
+
+    const salesData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Sales Performance',
+                data: [1, 15, 0, 18, 25, 22],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        };
+
+
+    document.addEventListener("DOMContentLoaded", fetchCharts());
+
+    function fetchCharts() {
+
+        renderChart(salesData);
+
+        fetch('/admin/dashChart')
+            .then(response => response.json())
+            .then(datalist => {
+                const labels = datalist.doughnut.map(item => item._id);
+                const datas = datalist.doughnut.map(item => item.numberOfOrders);
+                const data = {
+                    labels: labels,
+                datasets: [{
+                    label: 'Sales Count By Categorys:',
+                    data: datas,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)'
+                    ],
+                    hoverOffset: 4
+                }]
+            };
+                doughnutChart(data);
+            })
+            .catch(err =>{
+                console.error('error on fetch graph',err);
+            })
+        };
+
+
+
+function doughnutChart(data){
+    const donut = document.getElementById('salesCharts').getContext('2d');
+    const mydonut = new Chart(donut,{
+        type:'doughnut',
+        data:data,
+        options:{}
+    })
+};
+
+function lineChartFilter(filter = undefined) {
+    if(filter){
+        fetch(`/admin/dashChart?filter=${filter}`)
+        .then(response => response.json())
+        .then(datalist => {
+            const labels = datalist.combinedData.map(item => item.date);
+            const datas = datalist.combinedData.map(item => item.salesCount);
+            console.log('labels',labels);
+            console.log('datas',datas);
+            const newData = {
+            labels: labels,
+            datasets: [{
+                label: 'Sales Performance',
+                data:datas,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        }
+        salesChart.data = newData;
+        salesChart.update();
+        // renderChart(salesData);
+        })
+        .catch(err =>{
+                console.error('error on fetch line filter graph',err);
+            })
+    }else {
+        fetchCharts();
+    }
+        };
+
+
+        // Function to render the chart
+
+        function renderChart(data) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Sales'
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+    
+</script>
+
+
+    <%- include("../partials/admin-footer.ejs") -%>

@@ -1,0 +1,82 @@
+<%- include("../partials/user-header.ejs") -%>
+<%- include("../partials/profile_sidebar.ejs") -%>
+<!-- important -->
+<div class="col-md-8 col-sm-10 "><!-- end important-->
+    <div class="col-md-5 offset-md-2"> 
+        <h3 for="" class="d-flex justify-content-between">Edit Profile<span class="iconblock "><i class="bi bi-list"></i></span> </h3><hr>
+        <form action="/profileEdit" method="post" onsubmit="return validatedata()">
+            <div class="form-group mt-4">
+                <label for="username">User Name:</label>
+                <input type="text" class="form-control <%- locals.message === 'userError' ? 'border border-danger' : '' %>
+                 mt-2" name="username" id="username" placeholder="Enter User Name" value="<%= userdetails.userName  %>" autocomplete="username">
+                <small class="error-message text-danger" id="usernameError"><%= locals.message === 'usernameError' ? locals.error.message : '' %></small>
+            </div>
+            <div class="form-group mt-4">
+                <label for="phonenumber">Phone Number</label>
+                <input type="phonenumber" class="form-control <%- locals.message === 'phonenumberError' ? 'border border-danger' : '' %>
+                 mt-2" name="phonenumber" id="phonenumber" placeholder="Enter phonenumber" value="<%= userdetails.phoneNumber %>" autocomplete="phonenumber">
+                <small class="error-message text-danger" id="phonenumberError"><%= locals.message === 'phonenumberError' ? locals.error.message : '' %></small>
+            </div>
+           
+            <div class="text-center p-3">
+                <button class="btn btn-primary submit_button" type="submit"><span class="">Update Profile</span></button>
+            </div>
+        </form>
+    </div>
+    
+
+
+<!-- important -->
+</div>
+</div>
+</main>
+
+<script>
+    function validatedata(){
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phonenumber').value;
+
+    let isValid =true;
+
+    resetError();
+
+    if(!username){
+        displayError('username','Enter User Name.');
+        isValid = false;
+    }
+    if(!email.length){
+        displayError('email','Plese Enter a Valid Email.');
+        isValid = false;
+    }
+    // console.log(phoneNumber.length);
+    if(!/^\d+$/.test(phone) || phone.length !='10'){
+        displayError('phonenumber','phonenumber Number Invalid.');
+        isValid = false;
+    }
+
+    return isValid;
+
+    }
+
+    // display validate error message to user
+function displayError(field,message){
+    const errorElement = document.getElementById(field + 'Error');
+    const inputElement = document.getElementById(field);
+
+    errorElement.innerText = message;
+    inputElement.classList.add('border','border-danger');
+}
+
+// reset error when validation
+function resetError(){
+    const errorElement = document.querySelectorAll('.error-message');
+    const inputElement = document.querySelectorAll('.form-control');
+    
+    errorElement.forEach(element => element.innerText='')
+    inputElement.forEach(element => element.classList.remove('border','border-danger'))
+}
+</script>
+
+
+<%- include("../partials/user-footer.ejs") -%>

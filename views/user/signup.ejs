@@ -1,0 +1,45 @@
+<%- include("../partials/auth-header.ejs") -%>
+<div class="container-fluid div_logo" onclick="goToHome()"></div>
+<div class="d-fle flex-column justify-content-center">
+<div class="card col-md-6 offset-md-3  ">
+    <div class="card-body">
+        <h3 class="header-color card-title">Create New Account</h3>
+        <form action="/signup" method="post" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="userName">Name</label>
+                <input type="text" class="form-control" name="userName" id="userName" placeholder="Enter Your Name" autocomplete="name">
+                <small class="error-message text-danger" id="userNameError"></small>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control <%- locals.message === 'emailError' ? 'border border-danger' : '' %>"
+                 name="email" id="email" placeholder="Enter email" autocomplete="email">
+                <small class="error-message text-danger" id="emailError"><%= locals.message === 'emailError' ? locals.error.message : '' %></small>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" class="form-control <%- locals.message === 'phoneError' ? 'border border-danger' : '' %>"
+                 name="phoneNumber" id="phone" placeholder="+91" autocomplete="tel">
+                <small class="error-message text-danger" id="phoneError"><%- locals.message === 'phoneError' ? locals.error.message : '' %></small>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="********">
+                <small class="error-message text-danger" id="passwordError"></small>
+            </div>
+            <div class="form-group">
+                <label for="ConfirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="ConfirmPassword" placeholder="********">
+                <small class="error-message text-danger" id="ConfirmPasswordError"></small>
+            </div>
+            <div class="text-center p-3">
+                <button class="btn btn-primary submit_button" type="submit"><span class="submit_text">REQUEST OTP</span></button>
+            </div>
+        </form>
+        <div class="text-center mt-2">
+            <p class="text-secondary">I have an account ?<a href="/login">Login</a></p>
+        </div>
+    </div>
+</div>
+
+<%- include("../partials/auth-footer.ejs") -%>
