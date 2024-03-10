@@ -1,17 +1,5 @@
 
-/* .truncate-text{
-    max-width: 60px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-} */
 
-
-
-   /* .form-check-input:checked + .form-check-label .checkbox-circle {
-    background-color: red; 
-    border: 2px solid red;
-  } */
   .form-check-label .for-red {
     background-color: red;
     border: 2px solid red;
@@ -41,7 +29,6 @@
       border: 2px solid white;
   }
 .form-check-label .for-multi{
-      /* background-color: green; */
       background-image: linear-gradient(90deg, rgb(2, 0, 36) 0%, rgb(68, 68, 117) 23%, rgb(0, 212, 255) 50%, rgb(255, 0, 0) 75%, rgb(255, 255, 0) 100%);
       border: 2px solid pgreenink;
   }
@@ -79,16 +66,6 @@
     opacity: 1;
   }
 
-  /* .stock-details {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 10px; 
-  }
-  
-  .stock-details label {
-    display: block;
-    margin-bottom: 5px;
-  } */
 
   .boxes-details legend {
     font-size: 14px; 

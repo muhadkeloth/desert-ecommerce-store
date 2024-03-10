@@ -23,8 +23,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage:storage});
 
-
 let sidebarpointer;
+
 
 const loginland = (req,res) => {
     if(!req.session?.admin){
@@ -34,8 +34,7 @@ const loginland = (req,res) => {
     }
 }
 
-
-        
+       
 const loginpost = async (req, res) => {
   const { email, password } = req.body;
     if (email === process.env.ADMIN_ID && password === process.env.ADMIN_PASS) {
@@ -51,6 +50,7 @@ const loginpost = async (req, res) => {
     });
   }
 };
+
 
 const dashboardland = async (req,res) => {
   try{
@@ -110,7 +110,6 @@ const dashboardland = async (req,res) => {
     }
   ])
 
-  // start
   const topOrderproduct = await Order.aggregate([
     { $unwind: "$item" },
     { $group: {
@@ -139,7 +138,6 @@ topOrderproduct.forEach(product => {
 });
 
 const brand = Array.from(brandSet);
-
     res.render('dash',{report, topOrderCategory,brand, topOrderproduct, sidebarpointer : 'dash Admin'})
   }catch(err){
     console.error('error in dashbord admin side:',err);
@@ -149,18 +147,20 @@ const brand = Array.from(brandSet);
 
 const dashChart = async (req,res) => {
   try{
-    const filter = req.query.filter;
+    let filter = req.query.filter;
     let startDate = new Date();
     let endDate = new Date();
     let format;
-    if(filter){         
-      if(filter === 'daily'){
-        startDate.setDate(startDate.getDate() - 6);
-        format = '%d';
-      }else if(filter === 'monthly'){
-        startDate.setMonth(startDate.getMonth() - 5);
-        format = '%m';
-      }
+    if(filter === 'daily'){
+      startDate.setDate(startDate.getDate() - 6);
+      format = '%d';
+    }else{
+      startDate.setMonth(startDate.getMonth() - 5);
+      format = '%m';
+      filter = 'month';
+    }
+    const combinedData = [];
+    if(filter){       
       const salesData = await Order.aggregate([
         {
           $match: {
@@ -176,94 +176,77 @@ const dashChart = async (req,res) => {
         },
         { $sort: {_id: 1}}
       ]);
-      const combinedData = [];
+      
       if(filter === 'daily'){
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; 
         const lastSevenDays = [];
-        for (let i = 7; i >= 0; i--) {
+        for (let i = 6; i >= 0; i--) {
           const currentDate = new Date()
           currentDate.setDate(currentDate.getDate() -i);
           const dayIndex = currentDate.getDay();
           const dayName = days[dayIndex];  
 
           const dayObject = {};
-          dayObject[currentDate.getDate()] = dayName;
+          dayObject[dayName] = currentDate.getDate();
           lastSevenDays.push(dayObject);
         }
-        
         for (const item of lastSevenDays) {
-          const id = Object.keys(item);
-          const dataItem = salesData.find((dataItem) => dataItem._id === id[0]); 
+          const dayName = Object.keys(item)[0];
+          const dataItem = salesData.find((dataItem) => {
+            const currentDate = new Date();
+            currentDate.setDate(currentDate.getDate() -parseInt(dataItem._id));
+            const dayIndex = currentDate.getDay();
+            const dayNameinG = days[dayIndex];
+            return dayNameinG === dayName;
+          }); 
           if (dataItem) {
                 combinedData.push({
-                date: id[0], 
+                date: dayName, 
                 salesCount: dataItem.salesCount
-              });
-            
+              });            
           } else {
             combinedData.push({
-              date: id[0], 
+              date: dayName, 
               salesCount: 0
             });
           }
         }
-        console.log('combinedData',combinedData);
-      }else if(filter === 'monthly'){
-        // const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        
-        // const lastSevenDays = [];
-        // for (let i = 7; i >= 0; i--) {
-        //   const currentDate = new Date()
-        //   currentDate.setDate(currentDate.getDate() -i);
-        //   const dayIndex = currentDate.getDay();
-        //   const dayName = days[dayIndex];  
+        return res.json({result:true,combinedData})
+      }else{
+        const months = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+      ];
+      const lastSixMonth = [];
+      for (let i = 5; i>=0 ; i--){
+        const currentMonth = new Date();
+        currentMonth.setMonth(currentMonth.getMonth() -i);
+        const monthIndex = currentMonth.getMonth();
+        const monthName = months[monthIndex];
 
-        //   const dayObject = {};
-        //   dayObject[currentDate.getDate()] = dayName;
-        //   lastSevenDays.push(dayObject);
-        // }
-        // const combinedData = [];
-        // for (const item of lastSevenDays) {
-        //   const id = Object.keys(item);
-        //   const dataItem = salesData.find((dataItem) => dataItem._id === id[0]); 
-        //   if (dataItem) {
-        //         combinedData.push({
-        //         date: id, 
-        //         salesCount: dataItem.salesCount
-        //       });
-            
-        //   } else {
-        //     combinedData.push({
-        //       date: id, 
-        //       salesCount: 0
-        //     });
-        //   }
-        // }
-        // console.log('combinedData',combinedData);
+        const monthObject = {};
+        monthObject[monthName] = currentMonth.getMonth() +1;
+        lastSixMonth.push(monthObject);
       }
-      return res.json({result:true,combinedData})
-    }else{
-      startDate.setFullYear(startDate.getFullYear() - 5);
-      format = '%Y';
+      for(const item of lastSixMonth){
+        const monthName = Object.keys(item)[0];
+        const dataItem = salesData.find((dataItem) => {
+          return item[monthName] === parseInt(dataItem._id)
+        })
+        if(dataItem){
+          combinedData.push({
+            date: monthName,
+            salesCount: dataItem.salesCount
+          });
+        }else{
+          combinedData.push({
+            date: monthName,
+            salesCount: 0
+          })
+        }
+      }
+      }
     }
-
-      const salesData = await Order.aggregate([
-        {
-          $match: {
-            status: 'Delivered',
-            orderDate: { $gte: startDate, $lte: endDate}
-          }
-        },
-        {
-          $group: {
-            _id: {$dateToString: { format: format, date: '$orderDate'}},
-            salesCount: {$sum:1}
-          }
-        },
-        { $sort: {_id: 1}}
-      ]);
-      console.log('salesData',salesData);
 
       const doughnut = await Order.aggregate([
         { $match: { status: "Delivered"}},
@@ -274,11 +257,10 @@ const dashChart = async (req,res) => {
         { $unwind: "$category"},
         { $group : { _id: "$category.categoryName", numberOfOrders: { $sum: 1 }}}
       ]);
-      res.json({result:true,doughnut,salesData})
-
+      res.json({result:true,doughnut,combinedData})
    
   }catch(err){
-    console.error('error in fetch in cahrt',err);
+    console.error('error in fetch in chart',err);
     res.status(500).json({message: "Internal server error"});
   }
 }
@@ -370,7 +352,7 @@ const deleteCategory = async (req,res) => {
   try{
     const deletedCategory = await categorys.findByIdAndDelete(categoryId);
     if(Object.keys(deletedCategory).length > 0) res.json({success:true,message:'Category delete successfuly'});
-    else console.error('categoryId error or cant find it database ');
+    else res.status(400).json({success:false,message:'Category delete failed'});
   }catch(err){
     console.error('error deletecategory in backend');
   }
@@ -424,14 +406,12 @@ const productsland = async (req,res) => {
 
     try{
       if(!search){
-        // const allProducts = await products.find().skip(skip).limit(perPage);
         const allProducts = await products.aggregate(query);
         const totalproducts = await products.countDocuments();
         const totalPages = Math.ceil(totalproducts /perPage);
         res.render('products',{allProducts, totalPages, currentPage: page, search , sidebarpointer,message });
       }
       if(search){
-        console.log('searchbar:products');
         const productName = new RegExp(search, 'i');
         const allProducts = await products.find({title:productName}).skip(skip).limit(perPage);
         const totalCount = await products.countDocuments({title:productName});
@@ -467,7 +447,6 @@ const editProduct = async (req,res) => {
   const sidebarpointer = 'products Admin';
   try{
     if(productId){
-      // const productdata = await products.findOne({_id:productId});
       const productid = new mongoose.Types.ObjectId(productId);
       const productdata = await products.aggregate([
         {
@@ -486,7 +465,6 @@ const editProduct = async (req,res) => {
         }
       ]);
       const category = await categorys.find({ Status: true });
-      console.log('edit product',productdata,category,category._id,typeof(category._id));
     res.render('product-edit',{sidebarpointer,category,productdata})
     }
   }catch(err){
@@ -495,16 +473,13 @@ const editProduct = async (req,res) => {
 }
 
 const uploaded = (req,res,next)=>{
-  console.log('uploaded ');
   upload.array('imageUpload',5)(req,res,(err) => {
     if(err instanceof multer.MulterError){
-      console.log('uploaded middleerror',err.message);
       return res.status(400).json({
         success:false,
         message:'Multer error: ' + err.message
       })
     }
-    console.log('upload here');
     next() 
   })
 }
@@ -513,12 +488,9 @@ const uploaded = (req,res,next)=>{
 const editProductpost = async (req,res) => {
   const formData = req.body;
   let updatedProduct ;
-  console.log(req.body);
-  console.log(req.files);
   const images = req.files.map(file => file.filename);
   try{
     if(images.length === 0){
-      console.log(formData.stock.Size40,formData.id);
       updatedProduct = await products.findByIdAndUpdate(formData.id,
         {
           $set:{
@@ -568,9 +540,7 @@ const editProductpost = async (req,res) => {
           
         },{new: true})
     }
-    console.log('edited success',updatedProduct);
     if(updatedProduct){
-      console.log('edited success');
       res.redirect('/admin/products?message=editsuccess')
     }else{
       res.redirect('/admin/products?message=editfailed')
@@ -580,21 +550,15 @@ const editProductpost = async (req,res) => {
   }catch(err){
     console.error('create or edit error producta',err);
   }
-  // const images = req.files.map(file => file.filename);
 }
 
 const createProduct = async (req,res) => {
-  // sesson
   const category = await categorys.find({Status:true});
   res.render('product-create',{sidebarpointer:'products Admin',category})
-
 }
 
 const createProductPost = async (req,res) => {
-    // session
     const formData = req.body;
-    console.log(req.body);
-    console.log(req.files);
     const images = req.files.map(file => file.filename);
     try{
       const product = new products({
@@ -621,12 +585,10 @@ const createProductPost = async (req,res) => {
       if(saveproduct){
         const category = await categorys.find({Status:true});
         res.redirect('/admin/products?message=createsuccess')
-        // res.render('product-create',{sidebarpointer:'productstab',category})
       }else{
         const category = await categorys.find({Status:true});
         res.render('product-create',{sidebarpointer:'products Admin',category})
-      }
-  
+      }  
     }catch(err){
       console.error('create or edit error producta',err);
     }
@@ -644,7 +606,6 @@ const deleteProduct = async (req,res) => {
       })   
       res.json({success:true,message:'Product delete successfuly'});
     } else{
-      console.error('productId error or cant find it database ');
       res.status(404).json({success:false,message:'product not found'})
     } 
   }catch(err){
@@ -654,26 +615,21 @@ const deleteProduct = async (req,res) => {
 
 
 const usersland = async (req,res) => {
-    // session
     let search = 0;
       if(req.params.search  && req.params.search !== '0' ) search = req.params.search;
       else if( req.query.search && req.query.search !== '0') search = req.query.search;   
-    console.log('params',req.params.search,typeof(req.params.search));
     const perPage  = 12;
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * perPage;
     const sidebarpointer = 'users Admin';
-    console.log('query',req.query.search,typeof(req.query.search));
     try{
       if(!search){
         const allusers = await Users.find().skip(skip).limit(perPage);
         const totalUsers = await Users.countDocuments();
-        console.log('userdara',allusers,totalUsers);
         const totalPages = Math.ceil(totalUsers /perPage);
         res.render('users',{allusers, totalPages, currentPage: page, search , sidebarpointer});
       }
       if(search){
-        console.log('searchbar:');
         const userName = new RegExp(search, 'i');
         const allusers = await Users.find({userName:userName}).skip(skip).limit(perPage);
         const totalCount = await Users.countDocuments({userName:userName});
@@ -751,6 +707,7 @@ const ordersland = async (req,res) => {
   }  
 }
 
+
 const ordercancel =async (req,res) => {
   const orderId = req.body.orderId;
   const userId = req.session.user;
@@ -790,13 +747,13 @@ const ordercancel =async (req,res) => {
                   await user.save();
               }
           }
-      // res.status(200).json({success:true});
       res.status(200).json({success:true});
     }
   }catch(err){
     console.error('error in ordercancel',err);
   }
 }
+
 
 const ordertoggle = async (req,res) =>{
   const orderId = req.body.orderId;
@@ -867,6 +824,7 @@ const couponsland = async (req,res) => {
   }
 }
 
+
 const couponspost = async (req,res) => {
   const {title, couponcode, percentage,minPurchase,maxAmount, startdate, expdate} = req.body;
   try{
@@ -891,6 +849,7 @@ const couponspost = async (req,res) => {
   }
 }
 
+
 const updateCouponSatatus = async (req,res) => {
   const couponId = req.params.couponId; 
   try{
@@ -908,17 +867,17 @@ const updateCouponSatatus = async (req,res) => {
   }
 }
 
+
 const deletecoupon = async (req,res) => {
   const couponId = req.body.couponId;
   try{
     const deletedCoupon = await Coupon.findByIdAndDelete(couponId);
     if(Object.keys(deletedCoupon).length > 0) res.json({success:true,message:'coupon delete successfuly'});
-    else console.error('couponId error or cant find it database ');
+    else res.status(400).json({success:false,message:'coupon delete failed'});
   }catch(err){
     console.error('error deletecoupon in backend');
   }
 }
-
 
 
 const offersland = async (req,res) => {
@@ -956,6 +915,7 @@ const offersland = async (req,res) => {
   }
 }
 
+
 const fetchcategory = async (req,res) => {
   try{
     const categories = await categorys.find({Status:true});
@@ -965,6 +925,7 @@ const fetchcategory = async (req,res) => {
     res.status(500).json({message:err.message})
   }
 }
+
 
 const fetchprodcuts = async (req,res) => {
   const categoryId = req.params.categoryId;
@@ -977,6 +938,7 @@ const fetchprodcuts = async (req,res) => {
     res.status(500).json({message:err.message});
   }
 }
+
 
 const offerspost = async (req,res) => {
   const {title, percentage,categorySelect,productSelect  } = req.body;
@@ -998,19 +960,17 @@ const offerspost = async (req,res) => {
     
   }catch(err){
     res.redirect('/admin/offers?message=notunique')
-    console.error('error in create coupon',err);
   }
 }
+
 
 const updateOfferSatatus = async (req,res) => {
   const offerId = req.params.offerId; 
   try{
     const offerdoc = await Offer.findById(offerId);
-    console.log('ofeer',offerdoc);
     if(!offerdoc){
       return res.status(404).json({error:'offer not found'})
     }
-    console.log('offerdoc',offerdoc.status);
     if(!offerdoc.status){
       const productsdoc = await products.find({ _id: { $in: offerdoc.products } });
       await Promise.all(productsdoc.map(async (product) => {
@@ -1021,7 +981,6 @@ const updateOfferSatatus = async (req,res) => {
       const productsdoc = await products.find({ _id: { $in: offerdoc.products } });
       await Promise.all(productsdoc.map(async (product) => {
          product.price.offer = '' ;        
-        console.log('offerdoc2');
         await product.save();
       }));
     }
@@ -1035,6 +994,7 @@ const updateOfferSatatus = async (req,res) => {
   }
 }
 
+
 const deleteoffer = async (req,res) => {
   const offerId = req.body.offerId;
   try{
@@ -1045,64 +1005,13 @@ const deleteoffer = async (req,res) => {
         await product.save();
       }));
     if(Object.keys(deletedoffer).length > 0) res.json({success:true,message:'offer delete successfuly'});
-    else console.error('offerId error or cant find it database ');
+    else res.staus(400).json({success:false,message:'offer delete failed'});
   }catch(err){
     console.error('error deleteoffer in backend',err.message);
   }
 }
 
 
-
-
-// const salesreportland = async (req,res) => {
-//   try{
-//     const perPage = 12;
-//     const page = parseInt(req.query.page) || 1;
-//     const skip = (page - 1) * perPage;
-//     const totaloffers = await Order.countDocuments();
-//     const totalPages = Math.ceil(totaloffers /perPage);
-//        const orders = await Order.find({}, null, { skip, limit: perPage }).sort({ orderDate: -1 });
-//        const modifiedOrders = [];
-
-//         for (const order of orders) {
-//             const user = await Users.findById(order.userId);
-//             const productslist = await products.find({ _id: { $in: order.item.map(itemeach => itemeach.productId) } });
-            
-//             const productsWithTotalPrice = productslist.map(product => {
-//               const quantity = order.item.find(item => item.productId.toString() === product._id.toString()).quantity;
-//               const totalPriceForProduct = product.price.OriginalPrice * quantity;
-      
-//               return {
-//                   ...product.toObject(),
-//                   totalPrice: totalPriceForProduct
-//               };
-//           });      
-//           const totalPriceOfOrder = productsWithTotalPrice.reduce((total, product) => total + product.totalPrice, 0);
-//             const modifiedOrder = {
-//                 _id: order._id,
-//                 user: { email: user.email, name: user.userName },
-//                 products: productslist.map(product => ({ title: product.title })),
-//                 address: order.address,
-//                 orderDate: (() => {
-//                   const date = new Date(order.orderDate);
-//                   const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-//                   return date.toLocaleDateString('en-IN', options);
-//               })(),
-//                 paymentType: order.paymentType,
-//                 mrprice: totalPriceOfOrder,
-//                 totalPrice: order.totalPrice
-//             };
-//             modifiedOrders.push(modifiedOrder);
-//         }
-//         console.log('modifiedOrder',JSON.stringify(modifiedOrders, null, 2));
-//         res.render('salesReport',{sidebarpointer:'salesreporttab', allData:modifiedOrders, page, totalPages })
-
-//     // res.render('offer',{ search  ,message });   
-
-//   }catch(err){
-//     console.error('error in sales report',err);
-//   }
-// }
 const salesreportland = async (req,res) => {
   try{
     const perPage = 12;
@@ -1132,10 +1041,8 @@ const salesreportland = async (req,res) => {
                 endDate = new Date();
                 break;
             case 'custom':
-              console.log('custom',req.query.startDate,req.query.endDate);
                 startDate = req.query.startDate ? new Date(req.query.startDate) : null;
                 endDate = req.query.endDate ? new Date(req.query.endDate) : null;
-                console.log('custom',startDate,endDate);
                 break;
             default:
                 startDate = null;
@@ -1145,14 +1052,11 @@ const salesreportland = async (req,res) => {
           startDate:startDate,
           endDate:endDate
         };
-        console.log('inputDate',inputDate);
-        // const dateFilter = startDate && endDate ? {orderDate: { $gte: startDate, $lte: endDate } } : {};
         const dateFilter = startDate && endDate ? {orderDate: { $gte: startDate, $lte: endDate }, status: 'Delivered' } : {status:'Delivered'};
        const orders = await Order.find(dateFilter, null, { skip, limit: perPage }).sort({ orderDate: -1 });
        const totalorders = await Order.countDocuments(dateFilter);
        const totalPages = Math.ceil(totalorders /perPage);
        const modifiedOrders = [];
-// mystry
         for (const order of orders) {
             const user = await Users.findById(order.userId);
             const productslist = await products.find({ _id: { $in: order.item.map(itemeach => itemeach.productId) } });
@@ -1189,125 +1093,6 @@ const salesreportland = async (req,res) => {
     console.error('error in sales report',err);
   }
 }
-
-// start
-
-// const generatePdfSalesReport = async (req, res) => {
-//   const patients = [
-//     {
-//         "name": "Donovan Cottrell",
-//         "address": "2710 Joyce Street  Fairhope, AL 36532",
-//         "phone": "251-928-0994",
-//         "birthday": "October 22, 1962",
-//         "emailAddress": "DonovanBCottrell@armyspy.com",
-//         "bloodType": "B+",
-//         "height": "178",
-//         "weight": "85.6"
-//     },
-//     {
-//         "name": "Herbert Denny",
-//         "address": "727 Fowler Avenue  Chamblee, GA 30341",
-//         "phone": "770-220-4978",
-//         "birthday": "October 13, 1973",
-//         "emailAddress": "HerbertVDenny@dayrep.com",
-//         "bloodType": "O+",
-//         "height": "184",
-//         "weight": "78.5"
-//     },
-//     {
-//         "name": "Jasmine Lang",
-//         "address": "4650 Oakwood Avenue  New York, NY 10007",
-//         "phone": "432-625-0002",
-//         "birthday": "October 15, 1980",
-//         "emailAddress": "JasmineSLang@teleworm.us",
-//         "bloodType": "A+",
-//         "height": "163",
-//         "weight": "60.9"
-//     },
-//     {
-//         "name": "Tyler Smith",
-//         "address": "4560 Hide A Way Road  Orlando, FL 32811",
-//         "phone": "407-995-6876",
-//         "birthday": "March 21, 1940",
-//         "emailAddress": "TylerISmith@jourrapide.com",
-//         "bloodType": "O+",
-//         "height": "165",
-//         "weight": "99.4"
-//     },
-//     {
-//         "name": "Gordon White",
-//         "address": "4115 Pinnickinick Street  Camas, WA 98607",
-//         "phone": "360-833-2114",
-//         "birthday": "March 11, 1954",
-//         "emailAddress": "GordonRWhite@dayrep.com",
-//         "bloodType": "O-",
-//         "height": "186",
-//         "weight": "84.1"
-//     },
-//     {
-//         "name": "Juanita Miller",
-//         "address": "1001 Sumner Street  Riverside, CA 92507",
-//         "phone": "310-591-4624",
-//         "birthday": "January 15, 1967",
-//         "emailAddress": "JuanitaTMiller@jourrapide.com",
-//         "bloodType": "O+",
-//         "height": "172",
-//         "weight": "100.1"
-//     },
-//     {
-//         "name": "William Nelson",
-//         "address": "2599 South Street  Midland, TX 79701",
-//         "phone": "432-625-0002",
-//         "birthday": "February 2, 1991",
-//         "emailAddress": "WilliamSNelson@armyspy.com",
-//         "bloodType": "O+",
-//         "height": "173",
-//         "weight": "97.8"
-//     }
-// ];
-// console.log('2');
-
-// // Create The PDF document
-// const doc = new PDFDocument();
-
-// res.setHeader('Content-Type', 'application/pdf');
-// res.setHeader('Content-Disposition', 'attachment; filename=patients.pdf')
-// // Pipe the PDF into a patient's file
-// // doc.pipe(fs.createWriteStream(`patients.pdf`));
-// doc.pipe(res);
-
-// // Add the header - https://pspdfkit.com/blog/2019/generate-invoices-pdfkit-node/
-// doc
-//     // .image("logo.png", 50, 45, { width: 50 })
-//     .fillColor("#444444")
-//     .fontSize(20)
-//     .text("Patient Information.", 110, 57)
-//     .fontSize(10)
-//     .text("725 Fowler Avenue", 200, 65, { align: "right" })
-//     .text("Chamblee, GA 30341", 200, 80, { align: "right" })
-//     .moveDown();
-
-// // Create the table - https://www.andronio.me/2017/09/02/pdfkit-tables/
-// const table = {
-//     headers: ["Name", "Address", "Phone", "Birthday", "Email Address", "Blood Type", "Height", "Weight"],
-//     rows: []
-// };
-// console.log('3');
-// // Add the patients to the table
-// for (const patient of patients) {
-//     table.rows.push([patient.name, patient.address, patient.phone, patient.birthday, patient.emailAddress, patient.bloodType, patient.height, patient.weight])
-// }
-
-// // Draw the table
-// doc.moveDown().table(table, 10, 125, { width: 590 });
-
-// // Finalize the PDF and end the stream
-// doc.end();
-
-// console.log('4');
-// res.send()
-
-// }
 
 
 const generatePdfSalesReport = async (req, res) => {
@@ -1364,7 +1149,6 @@ const generatePdfSalesReport = async (req, res) => {
   }
 
   const doc = new PDFDocument();
-  //   const filename = Math.random() + '_doc' + '.pdf';
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader("Content-Disposition", "attachment; filename=Math.random()+sales_report.pdf");
 
@@ -1415,6 +1199,7 @@ const generatePdfSalesReport = async (req, res) => {
   console.error('error in pdf download');
 }
 };
+
 
 const  generateExcelSalesReport = async (req,res) => {
   try{
@@ -1511,7 +1296,6 @@ const  generateExcelSalesReport = async (req,res) => {
       res.status(500).json({error: "Internal server error"})
     })
 
-
 }catch(err){
   console.error('error in excel download',err);
 }
@@ -1527,45 +1311,17 @@ const logoutpost = (req,res) => {
 
 
 module.exports = {
-    loginland,
-    loginpost,
-    dashboardland,
-    dashChart,
-    categoryland,
-    productsland,
-    usersland,
-    offersland,
-    ordersland,
-    salesreportland,
-    updateUserSatatus,
-    updateCategorySatatus,
-    deleteCategory,
-    editCategoryName,
-    createCategory,
-    updateproductSatatus,
-    deleteProduct,
-    editProduct,
-    editProductpost,
-    createProduct,
-    createProductPost,
-    ordercancel,
-    ordertoggle,
-    couponsland,
-    couponspost,
-    updateCouponSatatus,
-    deletecoupon,
-    offerspost,
-    fetchcategory,
-    fetchprodcuts,
-    updateOfferSatatus,
-    deleteoffer,
-    generatePdfSalesReport,
-    generateExcelSalesReport,
+    loginland,loginpost,
+    dashboardland,dashChart,
+    categoryland,updateCategorySatatus,deleteCategory,editCategoryName,createCategory,
+    productsland,updateproductSatatus,deleteProduct,editProduct,editProductpost,createProduct,createProductPost,
+    usersland,updateUserSatatus,
+    offersland,offerspost,fetchcategory,fetchprodcuts,updateOfferSatatus,deleteoffer,
+    ordersland,ordercancel,ordertoggle,
+    couponsland,couponspost,updateCouponSatatus,deletecoupon,
+    salesreportland,generatePdfSalesReport,generateExcelSalesReport,
 
-
-    uploaded,
+    uploaded, /*middleware*/
     
-
-
     logoutpost
 }

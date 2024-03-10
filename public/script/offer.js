@@ -36,7 +36,6 @@
         }
       });
 
-// end 
 
     const myModal = new bootstrap.Modal(document.getElementById('createModel'));
    function createOffer(){
@@ -48,7 +47,6 @@
     }
 
         document.addEventListener('DOMContentLoaded', function(event) {
-            // Fetch categories from MongoDB collection
             fetch('/admin/offers/findcategory')
                 .then(response => response.json())
                 .then(categories => {
@@ -83,7 +81,6 @@
             });
  
 
-    //   start
     function toggleStatus(offerId){
         const status = document.getElementById(`status_${offerId}`).textContent.trim();
         const action = status === 'Listed' ? 'UnList' : 'List';

@@ -14,7 +14,6 @@
 <div class="col-12">
     <div class="flex-column justify-content-center col-md-12 ">
         <h6 class="mt-4">Oreders details...</h6>
-   
   
         <table class="table">
             <thead>
@@ -52,12 +51,14 @@
                   <td class="fw-bold"><i class="bi bi-currency-rupee"></i> <%= order.totalPrice %></td>
                   <td class="<%= order.status === 'Placed' ? 'text-info' : order.status === 'Confirmed' ? 'text-warning' : order.status === 'Delivered' ? 'text-success' : 'text-danger'  %>"><%= order.status %></td>
                   <td style="max-width: 8rem;">
-                    <% if(order.status !== 'Cancelled' && order.status !== 'Delivered' && order.status !== 'Returned' ) { %>
+                    <% if(order.status !== 'Cancelled' && order.status !== 'Delivered' && order.status !== 'Returned' && order.status !== 'PAYMENT_FAILED' ) { %>
                     <button class="btn btn-outline-primary" onclick="toggleModal('<%= order._id %>','<%= order.status %>')"><%= order.status === 'Placed' ? 'Confirm' : order.status === 'Confirmed' ? 'Delivered' : ''  %></button>
                     <button class="btn btn-outline-danger" onclick="toggleModal('<%= order._id %>')"><i class="bi bi-x-circle-fill"></i></button>
-                      <% }else if(order.status === 'Cancelled' && order.CancelReason || order.status === 'Returned' && order.CancelReason ) {  %>                        
-                        <p class="m-0 text-muted">Reason:</p> <span style="font-weight: bold;">"<%= order.CancelReason %>"</span> 
-                        <% } else { %>
+                    <% }else if(order.status === 'Cancelled' && order.CancelReason || order.status === 'Returned' && order.CancelReason ) {  %>                        
+                      <p class="m-0 text-muted">Reason:</p> <span style="font-weight: bold;">"<%= order.CancelReason %>"</span> 
+                      <% } else if(order.status === 'PAYMENT_FAILED') { %>
+                        <button class="btn btn-outline-danger" onclick="toggleModal('<%= order._id %>')"><i class="bi bi-x-circle-fill"></i></button>
+                          <% }else{ %>
                           <p>-</p>
                           <% } %>
                   </td>
@@ -130,15 +131,10 @@ function toggleModal(orderId, orderstatus = '') {
         togglestatus(orderId, orderstatus);
     }
 
-
-
   };
   myModal.show();
 
 }
-
-
-
 
 
     function togglestatus(orderId,orderstatus){

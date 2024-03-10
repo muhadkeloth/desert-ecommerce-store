@@ -10,11 +10,11 @@ adminRoute.set('views','./views/admin');
 adminRoute.get('/login',adminController.loginland);
 adminRoute.post('/login',adminController.loginpost);
 
-adminRoute.get('/',adminController.dashboardland);
-// adminRoute.get('/',auth.adminLogin,adminController.dashboardland);
-adminRoute.get('/dashChart',adminController.dashChart);
+// Admin dash 
+adminRoute.get('/',auth.adminLogin,adminController.dashboardland);
+adminRoute.get('/dashChart',auth.adminLogin,adminController.dashChart);
 
-
+// category manage
 adminRoute.get('/category',auth.adminLogin,adminController.categoryland)
 adminRoute.patch('/category/categorytoggle/:categoryId',auth.adminLogin,adminController.updateCategorySatatus)
 adminRoute.delete('/category/deleteCategory',auth.adminLogin,adminController.deleteCategory)
@@ -39,7 +39,6 @@ adminRoute.get('/orders',auth.adminLogin,adminController.ordersland)
 adminRoute.post('/ordercancel',auth.adminLogin,adminController.ordercancel)
 adminRoute.post('/ordertoggle',auth.adminLogin,adminController.ordertoggle)
 
-
 // coupons
 adminRoute.get('/coupons',auth.adminLogin,adminController.couponsland);
 adminRoute.post('/coupons',auth.adminLogin,adminController.couponspost);
@@ -56,15 +55,11 @@ adminRoute.delete('/offers/deleteoffer',auth.adminLogin,adminController.deleteof
 
 
 // salesroposrt
-// adminRoute.get('/salesreport',auth.adminLogin,adminController.salesreportland)
-adminRoute.get('/salesreport',adminController.salesreportland)
-adminRoute.post('/generatePdfSalesReport',adminController.generatePdfSalesReport)
-adminRoute.post('/generateExcelSalesReport',adminController.generateExcelSalesReport)
+adminRoute.get('/salesreport',auth.adminLogin,adminController.salesreportland)
+adminRoute.post('/generatePdfSalesReport',auth.adminLogin,adminController.generatePdfSalesReport)
+adminRoute.post('/generateExcelSalesReport',auth.adminLogin,adminController.generateExcelSalesReport)
 
-
-
+// logout
 adminRoute.post('/logout',adminController.logoutpost)
-
-
 
 module.exports = adminRoute;

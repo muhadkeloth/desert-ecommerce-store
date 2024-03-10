@@ -24,9 +24,8 @@
     color: #fff;
 }
 
-@media (max-width: 768px) { /* Small screen media query */
+@media (max-width: 768px) {
     .filtercontainer{
         display: none;
-    }
-   
+    }   
   }

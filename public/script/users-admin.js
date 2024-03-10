@@ -1,6 +1,5 @@
 
 
-
 function toggleStatus(userId) {
     const status = document.getElementById(`status_${userId}`).textContent.trim();
     const action = status === 'Active' ? 'InActive' : 'Active';

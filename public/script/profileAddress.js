@@ -13,8 +13,6 @@ function toggleEditForm(index){
 }
 
 
-
-
 document.addEventListener('DOMContentLoaded', function () {
     const toastElement = document.getElementById('toaster');
     if(toastElement){
@@ -77,6 +75,7 @@ function createaddressvalidation(){
         
         return isValid;    
 }
+
 function editaddressvalidation(){
         const numberedit = document.getElementById('numberedit').value;
         const pincodeedit = document.getElementById('pincodeedit').value;

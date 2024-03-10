@@ -2,32 +2,4 @@
 .truncate-text{
     max-width: 150px;
     overflow-wrap: break-word;
-    /* text-overflow: clip; */
-    /* white-space: nowrap; */
 }
-
-/* .pagination {
-    display: flex;
-    list-style: none;
-    padding: 0;
-}
-
-.page-item {
-    margin-right: 5px;
-}
-
-.page-link {
-    text-decoration: none;
-    border: none;
-    color:rgb(244, 88, 1,1);
-    cursor: pointer;
-}
-.page-link:hover{
-    color:rgb(244, 88, 1,1) ;
-    
-}
-
-.page-item.active .page-link {
-    background-color:rgb(244, 88, 1,1);
-    color: #fff;
-} */

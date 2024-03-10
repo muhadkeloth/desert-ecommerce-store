@@ -15,6 +15,7 @@ const razorpayInstance = new Razorpay({
     key_secret: RAZORPAY_SECRET_KEY
 });
 
+
 const homeland = async (req,res) => {
     try{
     const product = await products.aggregate([{$sample: {size: 9}}]);
@@ -30,7 +31,6 @@ const homeland = async (req,res) => {
         console.error('error on homepage land ',err.message);
     }
 }
-
 
 
 const productlists = async (req, res) => {
@@ -113,7 +113,6 @@ const productlists = async (req, res) => {
 };
 
 
-
 const productdetails = async (req,res) => {
     try{
         const userId = req.session?.user || false;
@@ -126,9 +125,6 @@ const productdetails = async (req,res) => {
 }
 
 
-
-
-// here star
 const profileland = async (req,res) => {
     try{
         const userId = req.session?.user || false;
@@ -152,11 +148,13 @@ const profileland = async (req,res) => {
     }
 }
 
+
 const profileEditland = async (req,res) => {
     const userId = req.session?.user || false;
     const userdetails = await Users.findById(userId);
         res.render('profileEdit',{userId, userdetails ,title:'Edit profile'})
 }
+
 
 const profileEditPost = async (req,res) => {
     const userId = req.session.user
@@ -178,11 +176,12 @@ const profileEditPost = async (req,res) => {
     }
 }
 
+
 const profilechangepasswordland = async (req,res) => {
     const userId = req.session?.user || false;
     res.render('profilechangepass',{ userId, title:'Edit password'})
-    
 }
+
 
 const profilechangepasswordpost = async (req,res) => {
     try{
@@ -200,57 +199,62 @@ const profilechangepasswordpost = async (req,res) => {
         if(!updateduserdata){
             return  res.redirect('/profile?message=changepassfailed');
         }
-        res.redirect('/profile?message=passchangesuccess');
-        
-        
+        res.redirect('/profile?message=passchangesuccess');            
     }catch(err){
         console.error('error in changing user password in profile ',err);
     }
 }
 
+
 const profileAddressland = async (req,res) => {
-    let message =req.query.message || false;
-        if(message =='deletesuccess'){
-            message = {bg:'text-bg-success',innertext:' Address removed successfully'} 
-        }else if(message == 'deleetefailed'){
-            message = {bg:'text-bg-danger',innertext:' Address removed failed'}
-        }else if(message == 'createsuccess'){
-            message = {bg:'text-bg-success',innertext:' Address created successfully'} 
-        }else if(message =='editfaild'){
-            message = {bg:'text-bg-danger',innertext:' Address edit failed'}
-        }else if (message == 'editsuccess'){
-            message = {bg:'text-bg-success',innertext:' Address edit successfully'}
-        }
-    const userId = req.session?.user || false;
-    const address = await Users.findById(userId)
-    
-    // console.log('address',userId);
-    const addresses = address?.addresses ;
-    // console.log('address',addresses);
-    res.render('profileAddress',{ userId,addresses, title:'Address Info', message})
-}
-
-const profileAddressCreatepost = async (req,res) => {
-    const {name, number, pincode, locality, address, city, landmark} = req.body;
-    const userId = req.session.user;
-    const updateaddress = await Users.findByIdAndUpdate(userId,{
-        $push:{
-            addresses:{
-                name:name,
-                number:number,
-                pincode:pincode,
-                locality:locality,
-                address:address,
-                city:city,
-                landmark:landmark || ''
+    try{
+        let message =req.query.message || false;
+            if(message =='deletesuccess'){
+                message = {bg:'text-bg-success',innertext:' Address removed successfully'} 
+            }else if(message == 'deleetefailed'){
+                message = {bg:'text-bg-danger',innertext:' Address removed failed'}
+            }else if(message == 'createsuccess'){
+                message = {bg:'text-bg-success',innertext:' Address created successfully'} 
+            }else if(message =='editfaild'){
+                message = {bg:'text-bg-danger',innertext:' Address edit failed'}
+            }else if (message == 'editsuccess'){
+                message = {bg:'text-bg-success',innertext:' Address edit successfully'}
             }
-        }
-    },{new:true,upsert:true})
-
-    if(updateaddress){
-        res.redirect('/profileAddress?message=createsuccess')
+        const userId = req.session?.user || false;
+        const address = await Users.findById(userId)  
+        const addresses = address?.addresses ;
+        res.render('profileAddress',{ userId,addresses, title:'Address Info', message})
+    }catch(err){
+        console.error('error in profileaddressland',err);
     }
 }
+
+
+const profileAddressCreatepost = async (req,res) => {
+    try{
+        const {name, number, pincode, locality, address, city, landmark} = req.body;
+        const userId = req.session.user;
+        const updateaddress = await Users.findByIdAndUpdate(userId,{
+            $push:{
+                addresses:{
+                    name:name,
+                    number:number,
+                    pincode:pincode,
+                    locality:locality,
+                    address:address,
+                    city:city,
+                    landmark:landmark || ''
+                }
+            }
+        },{new:true,upsert:true})
+        if(updateaddress){
+            res.redirect('/profileAddress?message=createsuccess')
+        }
+    }catch(err){
+        console.error('error in createprofileaddresss',err);
+    }
+}
+
 
 const profileAddresseditpost  = async (req,res) => {
     const {name, number, pincode, locality, address, city, landmark} = req.body;
@@ -289,7 +293,6 @@ const profileAddresseditpost  = async (req,res) => {
 const profileAddressdeleteland = async(req,res) => {
     const index = parseInt(req.params.index);
     const userId = req.session.user;
-    console.log('delete:',index,userId);
     try{
         const userDoc = await Users.findById(userId);
         if(!userDoc){
@@ -302,6 +305,7 @@ const profileAddressdeleteland = async(req,res) => {
         console.error('error in deleteaddress',err);
     }
 }
+
 
 const cartland = async (req,res) => {
     const amount = {totalPrice : 0,dis : 0};
@@ -372,6 +376,7 @@ const cartland = async (req,res) => {
     }
 }
 
+
 const addtocartpost = async (req,res) => {
     const {size, qty} = req.body;
     const userid = req.session.user;
@@ -418,6 +423,7 @@ const addtocartpost = async (req,res) => {
     }
 }
 
+
 const decrementIncrementCartpost = async (req,res) => {
     try{
         const {cartId  ,value} = req.body;
@@ -448,6 +454,7 @@ const decrementIncrementCartpost = async (req,res) => {
     }
 }
 
+
 const cartitemdeletedelete = async (req,res) => {
     const cartId = req.query.cartId;
     const userId = req.session.user;
@@ -467,6 +474,7 @@ const cartitemdeletedelete = async (req,res) => {
     }
 }
 
+
 const cartcountland =async (req,res) => {
     const userId = req.session.user;
     try{
@@ -479,6 +487,7 @@ const cartcountland =async (req,res) => {
         console.error('error in count cart',err);
     }
 }
+
 
 const checkoutland = async (req,res) => {
     try{
@@ -566,7 +575,6 @@ const paymentsetup = async (req,res) => {
         const userdata = await Users.findById(req.session.user);
         const contactNumber = "+91" + userdata.phoneNumber;
         let title ='',subtitle ='';
-        console.log('cartdocs',cartdocs);
         cartdocs.forEach(item => {
             title += item.title + ' ' ;
             subtitle += item.subtitle + ' ' ;
@@ -591,7 +599,6 @@ const paymentsetup = async (req,res) => {
                     email: userdata.email
                 })
             }else{
-                console.log('err',err);
                 res.status(400).send({success:false,msg:'Something went wrong'})
             }
         })
@@ -681,7 +688,6 @@ const repayment = async (req,res) => {
                     email: userdata.email
                 })
             }else{
-                console.log('err',err);
                 res.status(400).send({success:false,msg:'Something went wrong'})
             }
         })
@@ -699,12 +705,11 @@ const updateorderStatus = async (req,res) => {
         if(result){
             res.status(200).json({success:true})
         }
-
-
     }catch(err){
         console.error('error in updateorder inorder details',err);
     }
 }
+
 
 const couponvalidationpost = async (req,res) => {
     try{
@@ -728,7 +733,6 @@ const couponvalidationpost = async (req,res) => {
         }else{
             return res.status(400).json({result:false,message:"Couponalready used"})
         }
-
     }catch(err){
         console.error('error in coupon code validation',err);
     }
@@ -741,7 +745,6 @@ const ordersland = async (req,res) => {
     const limit = 5;
     const skip = (page - 1) * limit;
     try{
-
         const totalorder =await Order.countDocuments({ userId: userId });
         const totalPages = Math.ceil(totalorder /limit);
         const orderDetails = await Order.aggregate([
@@ -785,7 +788,6 @@ const ordersland = async (req,res) => {
                 }
             }
         ]).sort({_id:-1}).skip(skip).limit(limit);
-        console.log('orderliand',orderDetails);
         res.render('profileorders',{ userId,orderDetails, title:'My Orders',totalPages,page})   
     }catch(err){
         console.error('error in orders fetch',err);
@@ -849,8 +851,6 @@ const orderdetailsland = async (req,res) => {
     if (user?.wallethistory?.length > 0) {
         walletHistory = user.wallethistory.find(entry => entry.orderId.toString() === orderId.toString());
     }    
-    // console.log('in orderdetails',JSON.stringify(orderDetails, null, 2));
-    console.log('in orderDetails',orderDetails);
     res.render('profileorderdetails',{ userId, orderDetails ,walletHistory , title:'My Orders'})
 }
 
@@ -902,6 +902,7 @@ const ordercancelpost = async (req,res) => {
     }
 }
 
+
 const wishlistland = async (req,res) => {
     const userId = req.session?.user || false;
     const page = parseInt(req.query.page,10) || 1;
@@ -922,12 +923,8 @@ const wishlistland = async (req,res) => {
                 }
             }
         ]);
-        console.log('totalItemsAggregate',totalItemsAggregate);
         const totalItems = totalItemsAggregate.length > 0 ? totalItemsAggregate[0].totalItems : 0;
         const totalPages = Math.ceil(totalItems / limit);
-
-        // const totalwishlist =await Wishlist.countDocuments({ userId: userId });
-        // const totalPages = Math.ceil(totalwishlist /limit);
         const wishlistDetails = await Wishlist.aggregate([
             {
                 $match:{userId:new mongoose.Types.ObjectId(userId)}
@@ -966,7 +963,6 @@ const wishlistland = async (req,res) => {
                 }
             }
         ]);
-        console.log('wishlist',JSON.stringify(wishlistDetails,null,2),'totalPages',totalPages);
         res.render('wishlist',{ userId,wishlistDetails, title:'Wishlist',totalPages,page, totalItems})   
     }catch(err){
         console.error('error in wishlist fetch',err);
@@ -984,12 +980,7 @@ const wishlistadd = async (req,res) => {
             let flag = 1;
              for (let i = 0 ; i< userwishlist.item.length ; i++) {
                 if(userwishlist.item[i].productId.toString() === productId && userwishlist.item[i].size === size){
-                    // let newqty =  userwishlist.item[i].quantity + parseInt(qty);
-                    // userwishlist.item[i].quantity = newqty <=5 ? newqty : userwishlist.item[i].quantity;
                    return res.status(200).json({result:true,message:'product already added to wishlist'})
-                //    result=  await userwishlist.save();
-                //    flag=0;
-                        break;
                 }                        
              }if(flag){
                 const wishlistdata = {
@@ -1015,11 +1006,11 @@ const wishlistadd = async (req,res) => {
         }else{
             res.status(500).json({result:false,message:'product adding to  wishlist failed'})
         }
-
     }catch(err){
         console.error('error in add to wishlist post',err);
     }
 }
+
 
 const wishlistcountland = async (req,res) => {
     const userId = req.session.user;
@@ -1036,10 +1027,10 @@ const wishlistcountland = async (req,res) => {
     }
 }
 
+
 const wishlistitemdelete = async (req,res) => {
     const productId = req.query.productId;
     const userId = req.session.user;
-    console.log('1');
     try{
         const result = await Wishlist.findOneAndUpdate(
             {userId},
@@ -1064,16 +1055,7 @@ const walletland = async (req,res) => {
     const skip = (page - 1) * limit;
     try{
     let userData = await Users.findById(userId,{password:0});
-
-    console.log('userData',userData);
-    // if(!userData){
-    //     console.log('1');
-    //     userData = await Users.findById(userId,{password:0})
-    // }
-
-    
-    let totalWallet = 0;
-    
+    let totalWallet = 0;    
     if (userData?.wallethistory.length > 0) {
         userData.wallethistory = userData.wallethistory.sort((a, b) => b.date - a.date);
         totalWallet = userData.wallethistory.length;
@@ -1089,8 +1071,6 @@ const walletland = async (req,res) => {
 }
 
 
-
-
 const logout = (req,res) => {
     delete req.session.user;
     res.redirect('/');
@@ -1102,35 +1082,15 @@ module.exports = {
     productlists,
     productdetails,
     profileland,
-    profileEditland,
-    profileEditPost,
-    profilechangepasswordland,
-    profilechangepasswordpost,
-    profileAddressland,
-    profileAddressCreatepost,
-    profileAddresseditpost,
-    profileAddressdeleteland,
-    cartland,
-    addtocartpost,
-    decrementIncrementCartpost,
-    cartitemdeletedelete,
-    cartcountland,
-    checkoutland,
-    paymentsetup,
-    confirmorder,
-    repayment,
-    updateorderStatus,
-    ordersland,
-    orderdetailsland,
-    ordercancelpost,
-    wishlistland,
-    wishlistadd,
-    wishlistcountland,
-    wishlistitemdelete,
+    profileEditland,profileEditPost,
+    profilechangepasswordland,profilechangepasswordpost,
+    profileAddressland,profileAddressCreatepost,profileAddresseditpost,profileAddressdeleteland,
+    cartland,addtocartpost,decrementIncrementCartpost,cartitemdeletedelete,
+    checkoutland,couponvalidationpost,paymentsetup,confirmorder,
+    ordersland,updateorderStatus,orderdetailsland,ordercancelpost,repayment,
+    wishlistland,wishlistadd,wishlistitemdelete,   
     walletland,
-    couponvalidationpost,
-
-
+    wishlistcountland,cartcountland,
 
     logout
 }

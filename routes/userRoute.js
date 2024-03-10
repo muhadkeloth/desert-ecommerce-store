@@ -9,19 +9,21 @@ const auth = require('../middlewares/Auth')
 userRoute.set('view engine','ejs')
 userRoute.set('views','./views/user')
 
-
+// user login
 userRoute.get('/login',userController.loginland);
 userRoute.post('/login',userController.loginPost);
 
+// new user
 userRoute.get('/signup',userController.signupland);
 userRoute.post('/signup',userController.signupPost);
 
+// otpvalidation
 userRoute.get('/otpvalidation',otpController.otpvalidationland)
 userRoute.post('/otpvalidation',otpController.otpvalidationPost)
 
-userRoute.post('/forgotPassChange',userController.forgotPassChangePost)
-
+// for reset password
 userRoute.get('/forgotPassword',userController.forgotPasswordland);
+userRoute.post('/forgotPassChange',userController.forgotPassChangePost)
 userRoute.post('/forgotPassword',userController.forgotPasswordPost);
 
 // userhome
@@ -29,7 +31,7 @@ userRoute.get('/',homeusers.homeland);
 userRoute.get('/productlist',homeusers.productlists);
 userRoute.get('/productdetails',homeusers.productdetails);
 
-// profile
+// profile manage
 userRoute.get('/profile',auth.userAuthdash,homeusers.profileland);
 userRoute.get('/profileEdit',auth.userAuthdash,homeusers.profileEditland);
 userRoute.post('/profileEdit',auth.userAuthtologin,homeusers.profileEditPost);
@@ -60,23 +62,17 @@ userRoute.post('/orderdetails/repayment',auth.userAuthtologin,homeusers.repaymen
 userRoute.post('/orderdetails/updateorderStatus',auth.userAuthtologin,homeusers.updateorderStatus)
 userRoute.post('/ordercancel',auth.userAuthtologin,homeusers.ordercancelpost)
 
-
 // wishlist
 userRoute.get('/wishlist',auth.userAuthtologin,homeusers.wishlistland)
 userRoute.post('/addtowishlist',auth.userAuthtologin,homeusers.wishlistadd)
 userRoute.get('/wishlistcount',auth.userAuthtologin,homeusers.wishlistcountland);
 userRoute.delete('/wishlistitemdelete',auth.userAuthtologin,homeusers.wishlistitemdelete);
 
-
 // wallet
 userRoute.get('/wallet',auth.userAuthtologin,homeusers.walletland)
 
-
-
 // logout
 userRoute.get('/logout',homeusers.logout);
-
-
 
 module.exports = userRoute;
 

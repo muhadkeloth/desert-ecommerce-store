@@ -123,7 +123,6 @@
       window.addEventListener('DOMContentLoaded', function() {
           const searchValue = '<%= search %>';
           if (searchValue) {
-              // search_input(searchValue);
               const search_input = document.getElementById('search-input');
               search_input.value = searchValue;
           }
@@ -137,7 +136,6 @@
   const categorySelect = document.getElementById('category');
   categorySelect.addEventListener('change', function(event) {
     event.preventDefault();
-    // const selectedOption = event.target.value;
     const selectedFilters = [];
 
      const genderCheckboxes = document.querySelectorAll('input[name="gender"]:checked');

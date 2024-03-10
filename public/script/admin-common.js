@@ -1,8 +1,5 @@
 
 
-
-
-
 function goToLogout(){
     const form = document.createElement('form');
 
@@ -48,22 +45,4 @@ function goToBanners(){
 function goToSalesReport(){
     window.location.href = '/admin/salesreport' ;
 }
-
-
-// function searches(){
-//     const value = document.getElementById('search');
-//     let isValid =true;
-//     if(!value){
-//         isValid = false;
-//     }
-//     return isValid;
-// }
-
-
-
-
-
-
-
-
 

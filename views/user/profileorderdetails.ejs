@@ -1,6 +1,5 @@
 <%- include("../partials/user-header.ejs") -%>
   <%- include("../partials/profile_sidebar.ejs") -%>
-    <!-- important -->
 
     <div class="col-md-8 col-sm-10 ">
       <div class="col-md-10 offset-md-1">
@@ -22,7 +21,6 @@
                 <div class="mb-3 d-flex justify-content-between">
                   <div>
                     <span class="me-3">placed: <%= orderDetails[0].orderDate %></span>
-                    <!-- <span class="me-3"><%= orderDetails[0].paymentType %></span> -->
                     <span
                       class="badge rounded-pill <%= orderDetails[0].status === 'Placed' ? 'bg-secondary' : orderDetails[0].status === 'Confirmed' ? 'bg-info' : orderDetails[0].status === 'Delivered' ? 'bg-success' : 'bg-danger' %>">
                       <%= orderDetails[0].status %>
@@ -35,7 +33,6 @@
                           <i class="bi bi-three-dots-vertical"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                          <!-- <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit</a></li> -->
                           <li><button class="dropdown-item"
                               onclick="invoicePDF('<%= JSON.stringify(orderDetails) %>')"><i class="bi bi-printer"></i>
                               Invoice</button></li>
@@ -203,8 +200,6 @@
 
         <!-- end -->
 
-
-        <!-- important -->
       </div>
     </div>
     </main>

@@ -10,13 +10,7 @@ checkboxes.forEach(checkbox => {
   });
 });
 
-
-
-
-
-   
   
-//   end here
 const imageButton = document.getElementById('imageButton');
 const imageUpload = document.getElementById('imageUpload');
 const previewContainer = document.getElementById('imagePreviewContainer');
@@ -83,10 +77,6 @@ function displayImages(files) {
 }
 
 
-
-
-
-
 function productformValidation(){
     const title = document.getElementById('title').value;
     const subtitle = document.getElementById('subtitle').value;
@@ -94,7 +84,6 @@ function productformValidation(){
     const brand = document.getElementById('brand').value;
     const mrp = document.getElementById('mrp').value;
     const colorCheckboxes = document.querySelectorAll('.form-check-input');
-    // const imageUploadInput = document.getElementById('imageUpload');
 
     let isValid = true;
   

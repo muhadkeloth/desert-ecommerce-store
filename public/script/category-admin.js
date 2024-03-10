@@ -1,5 +1,4 @@
 
-
 function toggleStatus(categoryId){
     const status = document.getElementById(`status_${categoryId}`).textContent.trim();
     const action = status === 'Listed' ? 'UnList' : 'List';

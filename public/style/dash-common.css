@@ -6,19 +6,11 @@ body{
     background: rgb(246,246,246);
     font-family: 'Poppins',sans-serif;
 }
-/* .sam{
-    color: rgba(0, 0, 0, 0.767);
-    color: rgb(244, 88, 1,1);
-    background-color: rgb(255, 246, 244,1);
-    background:rgb(255, 237, 225,1);
-    box-shadow: 1px 1px 3px 5px rgba(125, 125, 127, 0.205);
-} */
+
 .second_color{
     background: rgb(255, 237, 225,1);
 }
 .div_logo{
-    /* margin-left: 10px; */
-    /* margin-left: .6rem; */
     width: 15.5rem;
     height: 2.5rem;
     padding: 1.8rem;
@@ -40,12 +32,6 @@ body{
     font-weight: 400;
     font-size: 1.05rem;
 }
-/* .side-bar{
-    width: 16.67vw;
-}
-.main-body{
-    width: 8.33vw;
-} */
 
 
 .material-symbols-rounded {
@@ -105,8 +91,6 @@ h5{
     background: rgb(244, 88, 1,1);
     color: white;
 }
-
-
 
 
 @media  (max-width:991px) {

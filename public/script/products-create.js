@@ -4,7 +4,7 @@ checkboxes.forEach(checkbox => {
   checkbox.addEventListener('change', (event) => {
     const checkedCount = document.querySelectorAll('.form-check-input:checked').length;
     if (checkedCount > 4) {
-      event.target.checked = false; // Uncheck the most recently clicked checkbox
+      event.target.checked = false;
       alert('You can select a maximum of four colors.');
     }
   });
@@ -32,12 +32,8 @@ imageUpload.addEventListener('change', (event) => {
       }
   
       const existingImages = imageUpload.files;
-  
-      // Combine the existing files with the new files
       const allFiles = [...existingImages, ...files];
-    //   const allFiles = [...existingImages, ...files];
   
-      // Create a new FileList
       const newFileList = new DataTransfer();
   
       // Append each file to the new FileList
@@ -85,73 +81,7 @@ imageUpload.addEventListener('change', (event) => {
         reader.readAsDataURL(file);
       }
     }
-  });
-
-// // start herer
-// imageUpload.addEventListener('change', (event) => {
-//     const files = event.target.files;
-  
-//     if (files) {
-//       if (files.length + previewContainer.querySelectorAll('img').length > maxImages) {
-//         alert(`You can only upload a maximum of ${maxImages} images.`);
-//         return;
-//       }
-  
-//       const existingImages = imageUpload.files;
-  
-//       // Combine the existing files with the new files
-//       const allFiles = [...existingImages, ...files];
-  
-//       // Create a new FileList
-//       const newFileList = new DataTransfer();
-  
-//       // Append each file to the new FileList
-//       allFiles.forEach(file => {
-//         newFileList.items.add(file);
-//       });
-  
-//       // Assign the new FileList to the input's files property
-//       imageUpload.files = newFileList.files;
-  
-//       for (const file of files) {
-//         const reader = new FileReader();
-//         reader.onload = (event) => {
-//           const imageElement = document.createElement('img');
-//           imageElement.classList.add('img-fluid', 'col-3', 'mb-3');
-//           imageElement.src = event.target.result;
-//           imageElement.dataset.imageId = file.name;
-  
-//           const closeButton = document.createElement('button');
-//           closeButton.type = 'button';
-//           closeButton.classList.add('btn', 'btn-sm', 'btn-close', 'p-0');
-//           closeButton.innerHTML = '&times;';
-//           closeButton.dataset.imageId = file.name;
-  
-//           const imageContainer = document.createElement('div');
-//           imageContainer.appendChild(imageElement);
-//           imageContainer.appendChild(closeButton);
-//           previewContainer.appendChild(imageContainer);
-  
-//           closeButton.addEventListener('click', () => {
-//             const imageToRemove = document.querySelector(`img[data-image-id="${file.name}"]`);
-//             imageToRemove.parentNode.parentNode.removeChild(imageToRemove.parentNode);
-  
-//             // Remove the file from the input when the close button is clicked
-//             const updatedFiles = [...imageUpload.files].filter(f => f.name !== file.name);
-  
-//             // Create a new FileList and set it to the input's files property
-//             const updatedFileList = new DataTransfer();
-//             updatedFiles.forEach(updatedFile => {
-//               updatedFileList.items.add(updatedFile);
-//             });
-//             imageUpload.files = updatedFileList.files;
-//           });
-//         };
-//         reader.readAsDataURL(file);
-//       }
-//     }
-//   });
-   
+  });   
 
   function productformValidation(){
     const title = document.getElementById('title').value;
@@ -200,15 +130,6 @@ imageUpload.addEventListener('change', (event) => {
         isValid =false;
     }
 
-
-// const colorCheckboxesd = document.getElementById('Checkbox-Red')
-    console.log('4',title,);
-    console.log('5',imageUploadInput.files.length);
-    console.log('6',imageUploadInput.files);
-    // if(!isValid)    {return isValid;}
-    // const formData = new FormData(document.querySelector('form'));
-// console.log([...formData.getAll('imageUpload')]);
-// console.log([...formData.entries()]);
     return isValid
 
 

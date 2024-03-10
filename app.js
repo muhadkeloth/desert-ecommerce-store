@@ -6,12 +6,10 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const app = express();
 require('dotenv').config();
-// const multer = require('multer');
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('connected to database'))
 .catch(() => console.error('connecting to database error'))
-// process.env.DB_CONNECT
 
 const userRoute = require('./routes/userRoute');
 const adminRoute = require('./routes/adminRoute');
@@ -25,7 +23,6 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'public')));
 
-// app.use(multer({dest: 'images'}).single('image name'));
 
 app.use(session({
     secret: 'comDOM321e345Gter',
@@ -42,7 +39,8 @@ app.use('/',userRoute);
 app.use('/admin',adminRoute);
 
 app.get('*',(req,res) => {
-    res.send('*erorr');
+    const userId = req.session?.user;
+    res.render('./partials/error.ejs',{title:'url not found',userId});
 });
 
 app.listen(3000)

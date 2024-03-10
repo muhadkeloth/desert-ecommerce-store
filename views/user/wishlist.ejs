@@ -1,14 +1,12 @@
 <%- include("../partials/user-header.ejs") -%>
 <%- include("../partials/profile_sidebar.ejs") -%>
-<!-- important -->
 <link rel="stylesheet" href="/style/prodileAddress.css">
 
 
-<div class="col-md-8 col-sm-10 "><!-- end important-->
+<div class="col-md-8 col-sm-10 ">
     <div class="col-md-10 offset-md-1">
         <h3 for="" class="d-flex justify-content-between">Profile Wishlist Management- <%= totalItems %><span class="iconblock "><i class="bi bi-list"></i></span> </h3>
         <hr>
-
         <% if(!wishlistDetails.length){  %>
             <h6>Wishlist is Empty</h6>
             <%  } else { for(let j = 0 ; j < wishlistDetails[0].items.length ; j++) { %>                
@@ -87,7 +85,6 @@
                 </div>
               </div>
 
-     <!-- important -->
 </div>
 </div>
 </main>
@@ -108,7 +105,6 @@
   const data = {
     size:size,qty:qty
   }
-  console.log(data);
   fetch('/addtocart?productId=' + productId,{
     method: 'POST',
      headers: {'Content-Type': 'application/json' },
@@ -152,7 +148,6 @@
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       if(data.success){
         const toggleid = document.getElementById('toastdelete_' + itemId);
         toggleid.classList.remove('show');    
@@ -168,9 +163,7 @@
           toaster.classList.remove('show','text-bg-success');
           toaster.classList.add('hide');
         }, 2000);
-        // location.reload();
       }else{
-        // toastalertfalied
         const toaster = document.getElementById('toaster');
         const tosterbody = document.getElementById('tosterbody');
         toaster.classList.remove('hide');

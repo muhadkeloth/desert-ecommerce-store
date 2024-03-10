@@ -61,17 +61,14 @@
                         <canvas id="salesCharts" class="bg-light col-md-10 m-2" height="200"></canvas>
                     </div>
                     <div class="col-md-6 ">
-                        <!-- <canvas id="salesChart" class="bg-light" width="100%"></canvas> -->
                         <div class="justify-content-between d-flex">
                             <p class="m-0">Sales By Categorys</p>
                             <div>
                                 <button class="btn btn-primary p-0 ps-1 pe-1" onclick="lineChartFilter('daily')">daily</button>
                                 <button class="btn btn-primary p-0 ps-1 pe-1" onclick="lineChartFilter('monthly')">monthly</button>
-                                <button class="btn btn-primary p-0 ps-1 pe-1">yearly</button>
                             </div>
                         </div>
                         <canvas id="salesChart" class="bg-light  col-10" width="100%"></canvas>
-
                     </div>
                     <div class="col-md-1"></div>
                 </div>
@@ -102,7 +99,6 @@
                     </div>
                 </div>
 
-
             </div>
             </div>
         </div>
@@ -114,24 +110,9 @@
 
 let salesChart;
 
-    const salesData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Sales Performance',
-                data: [1, 15, 0, 18, 25, 22],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        };
-
-
     document.addEventListener("DOMContentLoaded", fetchCharts());
 
-    function fetchCharts() {
-
-        renderChart(salesData);
-
+    function fetchCharts() {       
         fetch('/admin/dashChart')
             .then(response => response.json())
             .then(datalist => {
@@ -150,7 +131,21 @@ let salesChart;
                     hoverOffset: 4
                 }]
             };
+            const labelslineChart = datalist.combinedData.map(item => item.date);
+            const dataslineChart = datalist.combinedData.map(item => item.salesCount);
+            const salesData = {
+                    labels: labelslineChart,
+                    datasets: [{
+                            label: 'Sales Performance',
+                            data: dataslineChart,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    };
+
                 doughnutChart(data);
+                renderChart(salesData);
             })
             .catch(err =>{
                 console.error('error on fetch graph',err);
@@ -168,15 +163,13 @@ function doughnutChart(data){
     })
 };
 
-function lineChartFilter(filter = undefined) {
+function lineChartFilter(filter) {
     if(filter){
         fetch(`/admin/dashChart?filter=${filter}`)
         .then(response => response.json())
         .then(datalist => {
             const labels = datalist.combinedData.map(item => item.date);
             const datas = datalist.combinedData.map(item => item.salesCount);
-            console.log('labels',labels);
-            console.log('datas',datas);
             const newData = {
             labels: labels,
             datasets: [{
@@ -189,7 +182,6 @@ function lineChartFilter(filter = undefined) {
         }
         salesChart.data = newData;
         salesChart.update();
-        // renderChart(salesData);
         })
         .catch(err =>{
                 console.error('error on fetch line filter graph',err);

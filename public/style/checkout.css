@@ -1,8 +1,4 @@
-/* body{
-    margin-top:20px;
-    background-color: #f1f3f7;
-    } */
-    
+
     .card {
         margin-bottom: 24px;
         -webkit-box-shadow: 0 2px 3px #e4e8f0;
@@ -62,9 +58,7 @@
         top: 3px;
         left: -65px
     }
-    
-    
-    
+   
     .avatar-xs {
         height: 1rem;
         width: 1rem
@@ -240,7 +234,6 @@
         opacity: .8;
       }
 
-      /* greeting sms */
       .modal-confirm {
         color: #636363;
         width: 325px;

@@ -1,5 +1,4 @@
 const countdownElement = document.querySelector('.countdown');
-// const countdownElement = document.getElementById('countdown');
 let countdown = localStorage.getItem('countdown') ?? 120;
 countdownElement.innerHTML = `0${countdown}`;
 const countdownInterval = setInterval(() => {

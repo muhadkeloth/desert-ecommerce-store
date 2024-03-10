@@ -73,7 +73,6 @@ const couponCodeInput = document.getElementById("couponcode");
       });
 
 
-    //   start
     function toggleStatus(couponId){
         const status = document.getElementById(`status_${couponId}`).textContent.trim();
         const action = status === 'Listed' ? 'UnList' : 'List';

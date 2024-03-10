@@ -18,7 +18,6 @@ function validateForm(){
         displayError('email','Plese Enter a Valid Email.');
         isValid = false;
     }
-    // console.log(phoneNumber.length);
     if(!/^\d+$/.test(phone) || phone.length !='10'){
         displayError('phone','Phone Number Invalid.');
         isValid = false;

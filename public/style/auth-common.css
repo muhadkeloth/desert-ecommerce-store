@@ -2,7 +2,6 @@ body{
     font-family: 'Poppins',sans-serif;
 }
 
-
 .card{
     margin-top: 60px;
     margin-bottom: 80px;
@@ -79,7 +78,4 @@ a{
 .otpResend{
     display: none;
 }
-
-
-
 

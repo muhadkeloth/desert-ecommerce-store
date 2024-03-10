@@ -1,5 +1,4 @@
 
-
 const userLogin = (req,res,next) => {
     try{
         if(!req.session?.user){
@@ -11,6 +10,8 @@ const userLogin = (req,res,next) => {
         console.error('auth error ',err.message);
     }
 };
+
+
 const userAuthdash = (req,res,next) => {
     try{
         if(!req.session?.user){
@@ -22,6 +23,8 @@ const userAuthdash = (req,res,next) => {
         console.error('auth error ',err.message);
     }
 };
+
+
 const userAuthtologin = (req,res,next) => {
     try{
         if(!req.session?.user){
@@ -34,6 +37,7 @@ const userAuthtologin = (req,res,next) => {
     }
 };
 
+
 const adminLogin = (req,res,next) => {
     try{
         if(!req.session?.admin){
@@ -45,6 +49,7 @@ const adminLogin = (req,res,next) => {
         console.error('error on admin validation',err);
     }
 }
+
 
 module.exports = {
     userLogin,

@@ -3,25 +3,19 @@ const otpGenerator = require('otp-generator');
 
 let storedOTPs = {};
 
-// const generateAndStoreOtp =(email) => {
-//     const otp = generateOTP();
-//     storedOTPs[email] = otp;
-//     return otp;
-// }
 const StoreOtp =(email,otp,userName,phoneNumber,password) => {
-    // const newotp = generateOTP();
     storedOTPs[email] = {email,otp,userName,phoneNumber,password};
     console.log('otpservice',storedOTPs);
     setTimeout(() => {
         storedOTPs = {};
     }, 120000);
-    // return otp;
 }
 
-// otp to data
+
 const getStoredOTP = (email) => {
     return storedOTPs[email];
 };
+
 
 const verifyOTP = (enteredOTP, storedOTP) => {
     return enteredOTP === storedOTP;
@@ -31,6 +25,7 @@ const verifyOTP = (enteredOTP, storedOTP) => {
 const generateOTP = () => {
     return otpGenerator.generate(6,{lowerCaseAlphabets : false, upperCaseAlphabets: false, specialChars: false});
 }
+
 
 async function sendOTPEmail(email,otp,message){
     try{

@@ -75,11 +75,9 @@ function product_Edit(productId){
     console.log(productId);
     const form = document.createElement('form');
     form.method = 'GET';
-    // form.action =`/admin/products/updateProduct?productId=${productId}`;
     form.action =`/admin/products/editProduct/${productId}`;
     document.body.appendChild(form);
     form.submit()
-    // window.location.href = '/admin/products/updateProduct'
 }
 
 function showAlert(content,type) {

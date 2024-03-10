@@ -100,86 +100,6 @@ function submitorder(){
     }
 }
 
-// function submitorder(){
-//     const selectedaddress = document.querySelector('input[name="address"]:checked');
-//     const selectedpayment = document.querySelector('input[name="pay-method"]:checked');
-//         const totalPrice = document.getElementById('totalAmount').textContent;
-//         if(parseInt(totalPrice) === 0){            
-//             const orderconfirm = new bootstrap.Modal(document.getElementById('orderconfirm')) 
-//             orderconfirm.show();
-//             return; 
-//         }else if(parseInt(totalPrice) > 10000 && selectedpayment.value === 'COD' ){
-//             const toasteres = document.getElementById("toasteres")
-//             const tosterbodys = document.getElementById("tosterbodys");
-//             toasteres.classList.remove('text-bg-danger','text-bg-success');
-//             toasteres.classList.add('text-bg-danger','show');
-//             tosterbodys.innerText = 'COD not applicable above 10000';
-//             setTimeout(() => {
-//                 toasteres.classList.remove('show');
-//             }, 2000);
-//             return;
-//         }
-//         if(selectedpayment.value === 'RAZORPAY'){
-//             const cartdocs = document.getElementById('cartdocs').value;
-//             fetch('/paymentsetup',{
-//                 method:'POST',
-//                 headers: {'Content-Type': 'application/json' },
-//                 body:JSON.stringify({totalPrice, cartdocs})
-//             })
-//             .then(res => res.json())
-//             .then(data => {
-//                 if(data){
-//                     if(data.success){
-//                         const options = {
-//                             key:data.key_id,
-//                             amount:data.amount,
-//                             currency: 'INR',
-//                             name: data.product_name,
-//                             description:data.description,
-//                             image:'./img/desert-logos_black_croped.png',
-//                             order_id: data.order_id,
-//                             handler:function(res){
-//                                 confirmorder();
-//                             },
-//                             prefill: {
-//                                 contact: data.contact,
-//                                 name: data.name,
-//                                 email: data.email
-//                             },
-//                             notes: {
-//                                 description: data.description
-//                             },
-//                             theme: {
-//                                 color: '#f45801'
-//                             }
-//                         };
-            
-//                         const razorpayObject = new Razorpay(options);
-
-//                             razorpayObject.on('payment.failed', function(response){
-//                                 const toasteres = document.getElementById("toasteres")
-//                                 const tosterbodys = document.getElementById("tosterbodys");
-//                                 toasteres.classList.remove('text-bg-danger','text-bg-success');
-//                                 toasteres.classList.add('text-bg-danger','show');
-//                                 tosterbodys.innerText = 'Payment Failed';
-//                                 setTimeout(() => {
-//                                     toasteres.classList.remove('show');
-//                                 }, 2000);
-//                             });
-//                             razorpayObject.open();
-//                     }else{
-//                         alert('error: ' + data.msg);
-//                     }
-//                 }
-//               })    
-//               .catch(err => {
-//                 console.error('error order in razorpay confirm:',err);
-//               })
-//         }else{
-//             const orderconfirm = new bootstrap.Modal(document.getElementById('orderconfirm')) 
-//             orderconfirm.show(); 
-//         }    
-// }
 
 function confirmorder(status = undefined){
     const selectedaddress = document.querySelector('input[name="address"]:checked').value;
@@ -222,14 +142,12 @@ function confirmorder(status = undefined){
 }
 
 
-
-
-
 const couponCodeInput = document.getElementById("couponCode");
 
     couponCodeInput.addEventListener("input", function() {
         this.value = this.value.toUpperCase();
     });
+
 
 function couponapply(){
     const couponCode = document.getElementById('couponCode').value;
@@ -415,17 +333,3 @@ function fetchUncheckedData() {
         totalAmount.textContent = parseInt(totalPrice.value);
     }    
 }
-
-// start
-
-  [
-    {
-      _id: new ObjectId('65e14ae0af440b36f4bf53cb'),
-      totalPrice: '10330',
-      status: 'PAYMENT_FAILED',
-      paymentType: 'RAZORPAY',
-      orderDate: '2024-03-01 03:23:37',
-      deliveryDate: '2024-03-01',
-      item: [ [Object] ]
-    }
-  ]

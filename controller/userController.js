@@ -1,12 +1,8 @@
 const bcrypt = require('bcrypt');
-// const nodemailer = require('nodemailer')
-// const otpGenerator = require('otp-generator');
 const Users = require('../models/userModel');
 const otpService = require('../services/otpService')
-// const Mail = require('nodemailer/lib/mailer');
 
 let otp,otpchangepass;
-
 
 const loginland = (req,res) => {
     try{
@@ -19,6 +15,7 @@ const loginland = (req,res) => {
         console.log(err.message);
     }
 };
+
 
 const loginPost = async (req,res) => {
     try{
@@ -53,14 +50,8 @@ const loginPost = async (req,res) => {
                 }
             })
         }
-        // if(!user.blockStatus){
-        //     res.redirect('/logout');
-        // }
         req.session.user = user._id;
-        // res.render('homepage',user)
         res.redirect('/');
-
-
     }
     catch(err){
         console.log('error on loginpost',err);
@@ -76,13 +67,13 @@ const signupland = (req,res) => {
     }
 };
 
+
 const signupPost = async (req,res) => {
     try{        
         const {userName,email,phoneNumber,password} = req.body;
         const query = { $or : [{email},{phoneNumber}] };
         const existuser = await Users.findOne(query);
-        if(!existuser){
-          
+        if(!existuser){          
             if(!otp){
                 otp = otpService.generateOTP();
                 const hashedPassword = await bcrypt.hash(password,10);
@@ -94,8 +85,7 @@ const signupPost = async (req,res) => {
                 res.redirect('/otpvalidation?from=signup&email=' + email);
             }else{
                 res.redirect('/otpvalidation?from=signup&email=' + email)
-            }
-   
+            }   
         }else{
             if(existuser.email === email){
                return res.render('signup',{
@@ -106,7 +96,6 @@ const signupPost = async (req,res) => {
                     }
                 })
             }else{
-                // if(existuser.phoneNumber === phoneNumber)
                 return res.render('signup',{
                     title:"signup",
                     message:'phoneError',
@@ -131,12 +120,11 @@ const forgotPasswordland =  (req,res) => {
     }
 };
 
+
 const forgotPasswordPost = async (req,res) => {
     try{
-        console.log(req.body);
         const email =req.body.email;
         const user = await Users.findOne({email});
-        console.log(user);
         if(!user){
             return res.render('forgotPassword',{
                 title:"forgot Password",
@@ -160,7 +148,6 @@ const forgotPasswordPost = async (req,res) => {
     }
     catch(err){
         console.log('forgotpassweordpost error');
-        // res.render('otpvalidation')
     }
 };
 
@@ -191,12 +178,7 @@ const forgotPassChangePost = async (req,res) => {
 
 
 module.exports = {
-    loginland,
-    loginPost,
-    signupland,
-    signupPost,
-    forgotPasswordland,
-    forgotPasswordPost,
-    forgotPassChangePost
-    
+    loginland,loginPost,
+    signupland,signupPost,
+    forgotPasswordland,forgotPasswordPost,forgotPassChangePost  
 }

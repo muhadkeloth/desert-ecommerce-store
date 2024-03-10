@@ -1,7 +1,6 @@
 <%- include("../partials/user-header.ejs") -%>
 <%- include("../partials/profile_sidebar.ejs") -%>
-<!-- important -->
-<div class="col-md-8 col-sm-10 "><!-- end important-->
+<div class="col-md-8 col-sm-10 ">
     <div class="col-md-5 offset-md-2"> 
         <h3 for="" class="d-flex justify-content-between">Edit Profile<span class="iconblock "><i class="bi bi-list"></i></span> </h3><hr>
         <form action="/profileEdit" method="post" onsubmit="return validatedata()">
@@ -25,8 +24,6 @@
     </div>
     
 
-
-<!-- important -->
 </div>
 </div>
 </main>
@@ -49,7 +46,6 @@
         displayError('email','Plese Enter a Valid Email.');
         isValid = false;
     }
-    // console.log(phoneNumber.length);
     if(!/^\d+$/.test(phone) || phone.length !='10'){
         displayError('phonenumber','phonenumber Number Invalid.');
         isValid = false;

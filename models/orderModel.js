@@ -34,7 +34,7 @@ const orderSchema = mongoose.Schema({
     type: Date,
     default: function() {
       const currentDate = new Date();
-      currentDate.setDate(currentDate.getDate() + 7); // Add 7 days
+      currentDate.setDate(currentDate.getDate() + 7); 
       return currentDate;
     }
   },

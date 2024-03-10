@@ -11,7 +11,6 @@ const productsSchema = new mongoose.Schema({
         OriginalPrice:{type:Number,require:true}
     },
     colors:{type:[String],require:true},
-    // category:{type:String,require:true},
     category:{type:mongoose.Schema.Types.ObjectId,ref: "categorys",require:true},
     stocks:{
         Size40:Number,

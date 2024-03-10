@@ -38,31 +38,17 @@
                     <input type="number" class="form-control mt-2" name="percentage" id="percentage" placeholder="Enter percentage of discount" autocomplete="number" min="1" pattern="[0-9]+" max="99" required>
                 </div>
 
-                
-                <!-- <div class="form-group mt-4 d-flex mb-2">
-                    <div style="flex:1" >                        
-                        <label for="">select Category:<span class="text-danger">*</span></label>
-                        <input type="" class="form-control mt-2" name="" id="" placeholder="" required>       
-                    </div>
-                    <div style="flex:1" class="ms-2">
-                        <label for="">select Products Date<span class="text-danger">*</span></label>
-                        <input type="" class="form-control mt-2" name="" id="" placeholder="" required>   
-                    </div>
-                </div> -->
+               
                 <div class="form-group mt-4 d-flex mb-2">                    
                         <label for="categorySelect">Select Category:<span class="text-danger">*</span></label>
                         <select class="form-control mt-2" name="categorySelect" id="categorySelect" required>
-                            <!-- Options will be dynamically populated by JavaScript -->
                         </select>
                 </div>
                 <div class="form-group mt-4 d-flex mb-2">                    
                     <label for="productSelect">Select Products:<span class="text-danger">*</span></label>
                     <select multiple class="form-control mt-2" name="productSelect" id="productSelect" required>
-                        <!-- Options will be dynamically populated by JavaScript -->
                     </select>
-                </div>
-                
-                
+                </div>                               
 
                 <div class="modal-footer">
                    <button type="button" class="btn btn-secondary" onclick="createOffer()" data-dismiss="modal">Close</button>
@@ -140,12 +126,6 @@
               </div>
               <% } %>
 </div>
-
-
-
-
-
-
 
 
 </div>
