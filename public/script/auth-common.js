@@ -25,6 +25,9 @@ function validateForm(){
     if(/\s/.test(password) || password.length < 8 || password === userName || password === email){
         displayError('password','password Error try another.');
         isValid = false;
+    }else if(/\s/.test(password) || password.length < 8 || !/[A-Z]/.test(password) || !/\d/.test(password) || !/[@#$%^&*(password)!~]/.test(password) ){
+        displayError('password','password must 8 digit and atleast one number,Symbol,Capital.');
+        isValid = false;
     }
     if(ConfirmPassword.length == 0){
         displayError('ConfirmPassword','Please Enter Password.');

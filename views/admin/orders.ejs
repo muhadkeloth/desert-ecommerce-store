@@ -29,7 +29,9 @@
             <tbody>
               <% orders.forEach(order => { %>
                 <tr style="border-bottom: 2px solid black;">
-                  <td style="max-width: 150px;" ><%= order.userEmail %></td>
+                  <td style="max-width: 120px; overflow-wrap: break-word;" ><%= order.userEmail %> 
+                    <br> <span class="text-muted">ordered on:</span><% const orderDate = new Date(order.orderDate); %>
+                    (<%= orderDate.getDate() %>/<%= orderDate.getMonth() + 1 %>/<%= orderDate.getFullYear() %>)</td>
                   <td>
                     <% order.item.forEach(product => { %>
                       <div>

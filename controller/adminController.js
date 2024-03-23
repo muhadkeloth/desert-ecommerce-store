@@ -43,6 +43,7 @@ const loginpost = async (req, res) => {
     
   } else {
     return res.render("login", {
+      title:"login Admin",
       message: "emailError",
       error: {
         message: "email and password Invalid",

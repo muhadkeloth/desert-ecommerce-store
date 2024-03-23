@@ -29,15 +29,16 @@ const generateOTP = () => {
 
 async function sendOTPEmail(email,otp,message){
     try{
+        const {OTPMAIL_ID,OTPMAIL_PASS} = process.env;
         const transporter = nodemailer.createTransport({
             service:'gmail',
             auth:{
-                user: 'desertteam987@gmail.com',
-                pass: 'bdrb pfre ftsb odlo'
+                user: OTPMAIL_ID,
+                pass: OTPMAIL_PASS
             }
         });
         const mailOptions = {
-            from: 'desertteam987@gmail.com',
+            from: OTPMAIL_ID,
             to:email,
             subject:`Desert OTP for ${message} `,
             text:`Your OTP is ${otp}. Please enter this code to ${message}`

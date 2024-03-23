@@ -482,7 +482,8 @@ const cartcountland =async (req,res) => {
             {$match:{userId: new mongoose.Types.ObjectId(userId)}},
             {$project:{itemCount:{$size:'$item'}}}
         ]);
-        res.json({success:true,count:cartCount[0].itemCount})
+        const count = cartCount[0] ? cartCount[0].itemCount : 0 ;
+        res.json({success:true,count})
     }catch(err){
         console.error('error in count cart',err);
     }
@@ -795,63 +796,68 @@ const ordersland = async (req,res) => {
 }
 
 const orderdetailsland = async (req,res) => {
-    const userId = req.session.user;
-    const orderId = req.query.orderId;
-    if(!orderId){
-       return res.redirect('/orders')
-    }
-    const orderDetails = await Order.aggregate([
-        {
-            $match: { _id: new mongoose.Types.ObjectId(orderId) }
-        },
-        {
-            $unwind: "$item"
-        },
-        {
-            $lookup: {
-                from: "products",
-                localField: "item.productId",
-                foreignField: "_id",
-                as: "productDetails"
-            }
-        },
-        {
-            $addFields: {
-                "item.title": { $arrayElemAt: ["$productDetails.title", 0] },
-                "item.image": { $arrayElemAt: ["$productDetails.images", 0] }
-            }
-        },
-        {
-            $group:{
-                _id:"$_id",
-                totalPrice:{$first:"$totalPrice"},
-                status: { $first: "$status" },
-                address: { $first: "$address" },
-                paymentType: { $first: "$paymentType" },
-                orderDate: { $first: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$orderDate" } } },
-                deliveryDate: { $first: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } } },
-                item: { $push: "$item" }
-            }
-        },
-        {
-            $project: {
-                _id: 1,
-                orderDate: 1,
-                deliveryDate: 1,
-                paymentType: 1,
-                status: 1,
-                totalPrice: 1,
-                address: 1,
-                item: 1,
-            }
+    try{
+        const userId = req.session.user;
+        const orderId = req.query.orderId;
+        if(!orderId){
+           return res.redirect('/orders')
         }
-    ]);
-    const user = await Users.findById(userId);
-    let walletHistory;
-    if (user?.wallethistory?.length > 0) {
-        walletHistory = user.wallethistory.find(entry => entry.orderId.toString() === orderId.toString());
-    }    
-    res.render('profileorderdetails',{ userId, orderDetails ,walletHistory , title:'My Orders'})
+        const orderDetails = await Order.aggregate([
+            {
+                $match: { _id: new mongoose.Types.ObjectId(orderId) }
+            },
+            {
+                $unwind: "$item"
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "item.productId",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            {
+                $addFields: {
+                    "item.title": { $arrayElemAt: ["$productDetails.title", 0] },
+                    "item.image": { $arrayElemAt: ["$productDetails.images", 0] }
+                }
+            },
+            {
+                $group:{
+                    _id:"$_id",
+                    totalPrice:{$first:"$totalPrice"},
+                    status: { $first: "$status" },
+                    address: { $first: "$address" },
+                    paymentType: { $first: "$paymentType" },
+                    orderDate: { $first: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$orderDate" } } },
+                    deliveryDate: { $first: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } } },
+                    item: { $push: "$item" }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    orderDate: 1,
+                    deliveryDate: 1,
+                    paymentType: 1,
+                    status: 1,
+                    totalPrice: 1,
+                    address: 1,
+                    item: 1,
+                }
+            }
+        ]);
+        const user = await Users.findById(userId);
+        let walletHistory;
+        if (user?.wallethistory?.length > 0) {
+            walletHistory = user.wallethistory.find(entry => entry.orderId.toString() === orderId.toString());
+        }  
+        res.render('profileorderdetails',{ userId, orderDetails ,walletHistory , title:'My Orders'})
+    }
+    catch(err){
+        console.log('error in orderdetails',err)
+    }
 }
 
 const ordercancelpost = async (req,res) => {
@@ -1017,10 +1023,10 @@ const wishlistcountland = async (req,res) => {
     try{
         const wishlistDoc = await Wishlist.findOne({ userId: userId });
         if (wishlistDoc) {
-          const itemCount = wishlistDoc.item.length; 
+          const itemCount = wishlistDoc.item.length ; 
           res.json({ success: true, count: itemCount });
         } else {
-          res.json({ success: false, message: 'Wishlist not found for user' });
+          res.json({ success: true, count:0 });
         }        
     }catch(err){
         console.error('error in count cart',err);

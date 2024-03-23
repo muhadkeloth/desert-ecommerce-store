@@ -31,7 +31,6 @@
                                     <h5 class="font-size-16 mb-1">Shipping Info</h5>
                                     <p class="text-muted text-truncate mb-4"></p>
                                     <div class="mb-3">
-                                                <!-- here end addres check -->
                                                
                                                 <% if(addresses.length !== 0 ) { %>
                                                     <% for(let i = 0; i < addresses.length ; i++) { %>
@@ -105,7 +104,7 @@
                                                 <!-- end -->
                                             </div>
                                             <% } } else { %>
-                                                <h4>Not Stored Address</h4>
+                                                <h5>Not Have Stored Address <a href="/profileAddress" target="_blank" rel="noopener noreferrer">click here ...</a> to create address</h5>                                           
                                                 <% } %>                                        
                                     </div>
                                 </div>
@@ -124,12 +123,17 @@
                                 <div>
                                     <div class="justify-content-between d-flex">
                                         <h5 class="font-size-14  mb-3">Payment method :</h5>
-                                        <% if(wallet) { %>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" value="<%= wallet %>" id="flexSwitchCheckDefault">
-                                            <label class="form-check-label" for="flexSwitchCheckDefault">USE Wallet <span class="badge bg-success"><i class="bi bi-wallet2 pe-1"></i> <%= wallet %></span></label>
-                                          </div>                                          
-                                        <% } %>
+                                        <% if(!wallet || wallet === 0) { %>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" disabled  id="flexSwitchCheckDefault">
+                                                <label class="form-check-label" for="flexSwitchCheckDefault">USE Wallet <span class="badge bg-success"><i class="bi bi-wallet2 pe-1"></i> 0</span></label>
+                                            </div>                                          
+                                            <% }else{ %>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" value="<%= wallet %>" id="flexSwitchCheckDefault">
+                                                    <label class="form-check-label" for="flexSwitchCheckDefault">USE Wallet <span class="badge bg-success"><i class="bi bi-wallet2 pe-1"></i> <%= wallet %></span></label>
+                                                </div>                                          
+                                                <% } %>
                                     </div>
                                     
                                     <div class="row">                                   

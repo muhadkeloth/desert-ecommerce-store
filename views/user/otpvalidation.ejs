@@ -1,6 +1,11 @@
 <%- include("../partials/auth-header.ejs") -%>
 
-<div class="container-fluid div_logo"></div>
+<div class="container-fluid div_logo" onclick="homepage()"></div>
+<script>
+    function homepage(){
+        window.location.href = "/";
+    }
+</script>
 <div class="d-fle flex-column justify-content-center">
 <div class="card col-md-6 offset-md-3  ">
     <div class="card-body">

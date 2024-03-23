@@ -53,8 +53,10 @@
                   <!-- Image -->
                   <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light"
                     style="cursor: pointer;">
-                    <img src="/assets/uploads/<%= orderDetails[i].items[j].image[0] %>" class="w-100"
+                    <% if (orderDetails[i].items[j].image && orderDetails[i].items[j].image.length > 0) { %>
+                    <img src="/assets/uploads/<%= orderDetails[i].items[j]?.image[0] %>" class="w-100"
                       alt="Blue Jeans Jacket" />
+                      <% } %>
                   </div>
                   <!-- Image -->
                 </div>

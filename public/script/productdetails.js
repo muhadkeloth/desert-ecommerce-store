@@ -10,7 +10,6 @@ for (let size in parsedStockDetails) {
 
     if (parsedStockDetails[size] > 0) {
       sizeSelect.appendChild(option);
-
     } else {
       option.disabled = true; 
       option.style.opacity = 0.5; 
@@ -51,49 +50,56 @@ function goBack() {
 window.history.back();
 }
 
-function addtocart(productId) {
-  const size = document.getElementById("sizeSelect").value;
-  const qty = document.getElementById("qty").value;
-  const data = {
-    size: size,
-    qty: qty,
-  };
-  console.log(data);
-  fetch("/addtocart?productId=" + productId, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.result === true) {
-        const toaster = document.getElementById("toaster");
-        const tosterbody = document.getElementById("tosterbody");
-        toaster.classList.remove("hide");
-        toaster.classList.add("show", "text-bg-success");
-        tosterbody.innerText = data.message;
-        setTimeout(() => {
-          toaster.classList.remove("show", "text-bg-success");
-          toaster.classList.add("hide");
-        }, 2000);
-      } else {
-        const toaster = document.getElementById("toaster");
-        const tosterbody = document.getElementById("tosterbody");
-        toaster.classList.remove("hide");
-        toaster.classList.add("show", "text-bg-danger");
-        tosterbody.innerText = data.message;
-        setTimeout(() => {
-          toaster.classList.remove("show", "text-bg-danger");
-          toaster.classList.add("hide");
-        }, 2000);
-      }
+function addtocart(productId,userid) {
+  if(userid === 'false'){
+     window.location.href = '/login';
+  }else{
+    const size = document.getElementById("sizeSelect").value;
+    const qty = document.getElementById("qty").value;
+    const data = {
+      size: size,
+      qty: qty,
+    };
+    fetch("/addtocart?productId=" + productId, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
     })
-    .catch((err) => {
-      console.error("error addingcart:", err);
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.result === true) {
+          const toaster = document.getElementById("toaster");
+          const tosterbody = document.getElementById("tosterbody");
+          toaster.classList.remove("hide");
+          toaster.classList.add("show", "text-bg-success");
+          tosterbody.innerText = data.message;
+          setTimeout(() => {
+            toaster.classList.remove("show", "text-bg-success");
+            toaster.classList.add("hide");
+          }, 2000);
+          cartcount();
+        } else {
+          const toaster = document.getElementById("toaster");
+          const tosterbody = document.getElementById("tosterbody");
+          toaster.classList.remove("hide");
+          toaster.classList.add("show", "text-bg-danger");
+          tosterbody.innerText = data.message;
+          setTimeout(() => {
+            toaster.classList.remove("show", "text-bg-danger");
+            toaster.classList.add("hide");
+          }, 2000);
+        }
+      })
+      .catch((err) => {
+        console.error("error addingcart:", err);
+      });
+  }
 }
 
-function addtowishlist(productId){
+function addtowishlist(productId,userid){
+  if(userid === 'false'){
+    window.location.href = '/login';
+ }else{
   const size = document.getElementById('sizeSelect').value;
   const qty = document.getElementById('qty').value;
   const data = {
@@ -116,6 +122,7 @@ function addtowishlist(productId){
           toaster.classList.remove('show','text-bg-success');
           toaster.classList.add('hide');
         }, 2000);
+        wishlistcount();
       }else{
         const toaster = document.getElementById('toaster');
         const tosterbody = document.getElementById('tosterbody');
@@ -132,6 +139,7 @@ function addtowishlist(productId){
     console.error('error addingwishlist:',err);
   })
 }
+}
 
 
 function zoom(e){
@@ -147,3 +155,29 @@ zoomer.style.backgroundPosition = x + '% ' + y + '%';
 }
 
 
+function cartcount(){
+  fetch('/cartcount')
+ .then(res => res.json())
+ .then(data =>{ 
+  if(data.success === true){
+    const count = document.getElementById('cartCount');
+    count.innerText = data.count;
+  }
+})
+.catch(err => {
+  console.error('error fetch counter wishlist',err);
+})
+}
+function wishlistcount(){
+  fetch('/wishlistcount')
+ .then(res => res.json())
+ .then(data =>{ 
+  if(data.success === true){
+    const count = document.getElementById('wishlistCount');
+    count.innerText = data.count;
+  }
+})
+.catch(err => {
+  console.error('error fetch counter cart',err);
+})
+}
